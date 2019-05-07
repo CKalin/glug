@@ -24,4 +24,43 @@ public class SlugAllocation {
 	@Column
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
+
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public Round getRound() {
+		return round;
+	}
+	public void setRound(Round round) {
+		this.round = round;
+	}
+	public Player getFromPlayer() {
+		return fromPlayer;
+	}
+	public void setFromPlayer(Player fromPlayer) {
+		this.fromPlayer = fromPlayer;
+	}
+	public Player getToPlayer() {
+		return toPlayer;
+	}
+	public void setToPlayer(Player toPlayer) {
+		this.toPlayer = toPlayer;
+	}
+	public Integer getSlugCount() {
+		return slugCount;
+	}
+	public void setSlugCount(Integer slugCount) {
+		this.slugCount = slugCount;
+	}
+	public LocalDateTime getCreateDateTime() {
+		return createDateTime;
+	}
+	public void setCreateDateTime(LocalDateTime createDateTime) {
+		this.createDateTime = createDateTime;
+	}
+
+
 }

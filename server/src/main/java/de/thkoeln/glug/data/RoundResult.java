@@ -23,4 +23,42 @@ public class RoundResult {
 	@Column
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
+
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public Player getPlayer() {
+		return player;
+	}
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+	public Round getRound() {
+		return round;
+	}
+	public void setRound(Round round) {
+		this.round = round;
+	}
+	public Integer getSlugCountRecieved() {
+		return slugCountRecieved;
+	}
+	public void setSlugCountRecieved(Integer slugCountRecieved) {
+		this.slugCountRecieved = slugCountRecieved;
+	}
+	public Integer getSlugCountToSpend() {
+		return slugCountToSpend;
+	}
+	public void setSlugCountToSpend(Integer slugCountToSpend) {
+		this.slugCountToSpend = slugCountToSpend;
+	}
+	public LocalDateTime getCreateDateTime() {
+		return createDateTime;
+	}
+	public void setCreateDateTime(LocalDateTime createDateTime) {
+		this.createDateTime = createDateTime;
+	}
+
 }

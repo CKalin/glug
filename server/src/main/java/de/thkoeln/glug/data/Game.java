@@ -30,4 +30,43 @@ public class Game {
 	@Column
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
+
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public Player getGamemaster() {
+		return gamemaster;
+	}
+	public void setGamemaster(Player gamemaster) {
+		this.gamemaster = gamemaster;
+	}
+	public Set<Player> getPlayers() {
+		return players;
+	}
+	public void setPlayers(Set<Player> players) {
+		this.players = players;
+	}
+	public Set<Round> getRounds() {
+		return rounds;
+	}
+	public void setRounds(Set<Round> rounds) {
+		this.rounds = rounds;
+	}
+	public String getAccessionCode() {
+		return accessionCode;
+	}
+	public void setAccessionCode(String accessionCode) {
+		this.accessionCode = accessionCode;
+	}
+	public LocalDateTime getCreateDateTime() {
+		return createDateTime;
+	}
+	public void setCreateDateTime(LocalDateTime createDateTime) {
+		this.createDateTime = createDateTime;
+	}
+
+
 }

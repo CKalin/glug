@@ -36,4 +36,67 @@ public class Player {
 	@Column
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
+
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public Set<Game> getGamesLeaded() {
+		return gamesLeaded;
+	}
+	public void setGamesLeaded(Set<Game> gamesLeaded) {
+		this.gamesLeaded = gamesLeaded;
+	}
+	public Set<Game> getGames() {
+		return games;
+	}
+	public void setGames(Set<Game> games) {
+		this.games = games;
+	}
+	public Set<ChallengeResponse> getChallengeResponses() {
+		return challengeResponses;
+	}
+	public void setChallengeResponses(Set<ChallengeResponse> challengeResponses) {
+		this.challengeResponses = challengeResponses;
+	}
+	public Set<RoundResult> getRoundResults() {
+		return roundResults;
+	}
+	public void setRoundResults(Set<RoundResult> roundResults) {
+		this.roundResults = roundResults;
+	}
+	public Set<SlugAllocation> getSlugsAllocated() {
+		return slugsAllocated;
+	}
+	public void setSlugsAllocated(Set<SlugAllocation> slugsAllocated) {
+		this.slugsAllocated = slugsAllocated;
+	}
+	public Set<SlugAllocation> getSlugsRecieved() {
+		return slugsRecieved;
+	}
+	public void setSlugsRecieved(Set<SlugAllocation> slugsRecieved) {
+		this.slugsRecieved = slugsRecieved;
+	}
+	public LocalDateTime getCreateDateTime() {
+		return createDateTime;
+	}
+	public void setCreateDateTime(LocalDateTime createDateTime) {
+		this.createDateTime = createDateTime;
+	}
+
+
 }

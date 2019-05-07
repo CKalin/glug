@@ -21,4 +21,31 @@ public class ChallengeResponse {
 	@Column
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
+
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public Player getPlayer() {
+		return player;
+	}
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+	public Challenge getChallenge() {
+		return challenge;
+	}
+	public void setChallenge(Challenge challenge) {
+		this.challenge = challenge;
+	}
+	public LocalDateTime getCreateDateTime() {
+		return createDateTime;
+	}
+	public void setCreateDateTime(LocalDateTime createDateTime) {
+		this.createDateTime = createDateTime;
+	}
+
+
 }

@@ -26,4 +26,31 @@ public class QuizChallenge {
 	@Column
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
+
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public Round getRound() {
+		return round;
+	}
+	public void setRound(Round round) {
+		this.round = round;
+	}
+	public Set<Challenge> getChallenges() {
+		return challenges;
+	}
+	public void setChallenges(Set<Challenge> challenges) {
+		this.challenges = challenges;
+	}
+	public LocalDateTime getCreateDateTime() {
+		return createDateTime;
+	}
+	public void setCreateDateTime(LocalDateTime createDateTime) {
+		this.createDateTime = createDateTime;
+	}
+
+
 }

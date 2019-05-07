@@ -26,6 +26,7 @@ public class Game {
 	private Set<Player> players;
 	@OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Round> rounds;
+	private String accessionCode;
 	@Column
 	@CreationTimestamp
 	private LocalDateTime createDateTime;

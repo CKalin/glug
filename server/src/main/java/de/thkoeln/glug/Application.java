@@ -1,11 +1,52 @@
 package de.thkoeln.glug;
 
+import javax.annotation.PostConstruct;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import de.thkoeln.glug.data.Player;
+import de.thkoeln.glug.data.PlayerRepository;
 
 @SpringBootApplication
 public class Application {
-  public static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
-  }
+	Logger logger = LoggerFactory.getLogger(Application.class);
+
+	@Autowired
+	PlayerRepository playerRepository;
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
+	@PostConstruct
+	private void initDatabase() {
+		Player helmutchecker = new Player();
+		helmutchecker.setName("Helmutchecker");
+		helmutchecker.setPassword("test123");
+		playerRepository.save(helmutchecker);
+
+		Player kaema7 = new Player();
+		kaema7.setName("kaema7");
+		kaema7.setPassword("jonage");
+		playerRepository.save(kaema7);
+
+		getAllPlayers().forEach(player -> {
+			logger.info("This is player " + player.getName() + " with id " + player.getId());
+		});
+
+		getPlayersWithName("Helmutchecker").forEach(player -> {
+			logger.info("Found player with name " + player.getName() + " with id " + player.getId());
+		});
+	}
+
+	public Iterable<Player> getAllPlayers() {
+		return playerRepository.findAll();
+	}
+
+	public Iterable<Player> getPlayersWithName(String name) {
+		return playerRepository.findByName(name);
+	}
 }

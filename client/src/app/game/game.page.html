@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Glug
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="ion-padding">
+    <h5>Willkommen zu Glug - das Trinkspiel!</h5>
+    <ion-item>
+      <ion-label position="stacked">Dein Name</ion-label>
+      <ion-input [ngModel]="name" (ngModelChange)="nameChanged($event)" placeholder=""></ion-input>
+    </ion-item>
+    <p>Möchtest du ein Spiel erstellen oder einem Spiel beitreten?</p>
+    <ion-button [disabled]="!name" expand="block" color="primary" (click)="joinGame()">Spiel Beitreten</ion-button>
+    <ion-button [disabled]="!name" expand="block" color="light" (click)="createGame()">Spiel Erstellen</ion-button>
+  </div>
+</ion-content>

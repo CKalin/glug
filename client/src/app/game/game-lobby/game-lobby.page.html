@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Glug
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="ion-padding">
+    <h5>Teilnehmer</h5>
+    <ion-list>
+      <ion-item *ngFor="let p of participants">
+        {{p.name}}
+        <ion-note slot="end" *ngIf="p.isYou">Du</ion-note>
+      </ion-item>
+    </ion-list>
+    <p>Teilnahmecode: <b>{{code}}</b></p>
+    <ion-text color="primary">
+      <p *ngIf="mode=='join'">Bitte warte bis der Spielleiter das Spiel startet.</p>
+    </ion-text>
+    <ion-button *ngIf="mode=='create'" expand="block" color="primary" (click)="startGame()">Spiel Starten</ion-button>
+  </div>
+</ion-content>

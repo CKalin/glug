@@ -1,0 +1,55 @@
+$colors: (
+  blue: #446eb6,
+  yellow: #ffc425,
+  green: #00b159,
+  brown: #f2a953,
+  grey: #aaaaaa,
+  red: #d11141,
+  orange: #f37735
+);
+
+
+@mixin color-modifiers($attribute: 'color', $prefix: '-') {
+  @each $name, $hex in $colors {
+    &#{$prefix}#{$name} {
+      #{$attribute}: $hex;
+    }
+  }
+};
+
+.challenge {
+  padding: 10px;
+}
+
+.answers {
+  display: flex;
+  justify-content: center;
+}
+
+.svg {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text {
+  font-size: 40pt;
+}
+
+.question {
+  text-align: center;
+  font-size: 20pt;
+}
+
+.object {
+  stroke-width: 10px;
+  stroke-linejoin: round;
+}
+
+.fill {
+  @include color-modifiers($attribute: fill);
+}
+.stroke {
+  @include color-modifiers($attribute: stroke);
+}

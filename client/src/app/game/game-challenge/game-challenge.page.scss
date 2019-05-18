@@ -1,13 +1,13 @@
 $colors: (
-  blue: #446eb6,
-  yellow: #ffc425,
-  green: #00b159,
-  brown: #f2a953,
-  grey: #aaaaaa,
-  red: #d11141,
-  orange: #f37735
+    blue: #446eb6,
+    yellow: #ffc425,
+    green: #00b159,
+    brown: #f2a953,
+    grey: #aaaaaa,
+    red: #d11141,
+    orange: #f37735,
+    purple: #5900b1
 );
-
 
 @mixin color-modifiers($attribute: 'color', $prefix: '-') {
   @each $name, $hex in $colors {
@@ -15,7 +15,9 @@ $colors: (
       #{$attribute}: $hex;
     }
   }
-};
+}
+
+;
 
 .challenge {
   padding: 10px;
@@ -47,9 +49,23 @@ $colors: (
   stroke-linejoin: round;
 }
 
+.message {
+  width: 100%;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+
+  .text {
+    font-size: 120pt;
+  }
+}
+
 .fill {
   @include color-modifiers($attribute: fill);
 }
+
 .stroke {
   @include color-modifiers($attribute: stroke);
 }

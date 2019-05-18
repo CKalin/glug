@@ -1,14 +1,20 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Challenge {{roundCount}}
+      Challenge
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="ion-padding">
-    <div class="challenge">
+    <div class="message" *ngIf="message">
+      <div class="text">{{message.text}}</div>
+      <ion-text color="primary">
+        <div class="subtext">{{message.subtext}}</div>
+      </ion-text>
+    </div>
+    <div class="challenge" *ngIf="challenge">
       <div class="svg">
         <svg width="100%" height="50%" viewBox="-5 -5 310 310"
              [ngClass]="['fill-'+challenge.color,'stroke-'+challenge.border]">
@@ -35,16 +41,16 @@
         </svg>
       </div>
       <p class="question">{{challenge.question}}</p>
-    </div>
-    <div class="answers">
-      <ion-button color="light">
-        <ion-icon slot="start" name="close"></ion-icon>
-        Falsch
-      </ion-button>
-      <ion-button color="light">
-        <ion-icon slot="start" name="checkmark"></ion-icon>
-        Richtig
-      </ion-button>
+      <div class="answers">
+        <ion-button color="light" (click)="answer(false)">
+          <ion-icon slot="start" name="close"></ion-icon>
+          Falsch
+        </ion-button>
+        <ion-button color="light" (click)="answer(true)">
+          <ion-icon slot="start" name="checkmark"></ion-icon>
+          Richtig
+        </ion-button>
+      </div>
     </div>
   </div>
 </ion-content>

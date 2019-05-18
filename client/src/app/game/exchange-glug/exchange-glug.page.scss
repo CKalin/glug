@@ -1,0 +1,21 @@
+.glug-count {
+  display: flex;
+  align-self: center;
+
+  .number {
+    display: inline-block;
+    width: 20px;
+  }
+  img {
+    margin-left: 5px;
+    height: 20px;
+  }
+}
+
+.glug {
+  font-weight: 600;
+}
+
+ion-list-header {
+  padding-right: 16px;
+}

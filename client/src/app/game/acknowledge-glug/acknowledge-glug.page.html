@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Glug Erledigen
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="ion-padding" *ngIf="you.glugsAcknowledged">
+    <ion-list-header>Glug Verteilung</ion-list-header>
+    <ion-item lines="none">
+      <google-chart [title]="'Glug Statistik'"
+                    type="Sankey"
+                    [data]="chart.data"
+                    [columnNames]="chart.columnNames"
+                    [options]="chart.options"
+      >
+      </google-chart>
+    </ion-item>
+    <ion-list *ngIf="you.glugsAcknowledged">
+      <ion-list-header>
+        Offene Glugs
+      </ion-list-header>
+      <ion-item *ngFor="let player of players">
+        <span slot="start" class="glug-count">
+          <span class="number">{{player.glugs}}</span>
+          <img slot="end" src="assets/icon/favicon.png"/>
+        </span>
+        <ion-label>{{player.name}}</ion-label>
+        <ion-note slot="end" *ngIf="player.isYou">Du</ion-note>
+        <ion-icon slot="end" *ngIf="player.glugsAcknowledged" name="checkmark"></ion-icon>
+      </ion-item>
+      <ion-list-header *ngIf="!allAcknowledged()">
+        Bitte warte bis alle Glugs erledigt sind.
+      </ion-list-header>
+      <ion-list-header *ngIf="!you.isLeader && allAcknowledged()">
+        Bitte warte bis der Spielleiter eine neue Runde startet.
+      </ion-list-header>
+    </ion-list>
+
+    <ion-button *ngIf="you.isLeader" (click)="startNewRound()" [disabled]="!allAcknowledged()" expand="block" color="primary">
+      Neue Runde Starten
+    </ion-button>
+  </div>
+  <div class="ion-padding" *ngIf="!you.glugsAcknowledged">
+    <div class="logo">
+      <img src="assets/icon/favicon.png" style="width: 64px; height: 64px;"/>
+      <p>Herzlichen Glückwunsch, du hast <span class="glug">{{you.glugs}} Glugs</span> erhalten.</p>
+    </div>
+    <ion-button (click)="acknowledgeGlugs()" expand="block" color="primary">
+      <ion-icon slot="start" name="checkmark"></ion-icon>
+      Glugs erledigt!
+    </ion-button>
+  </div>
+</ion-content>

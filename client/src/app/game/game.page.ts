@@ -33,7 +33,7 @@ export class GamePage implements OnInit {
       inputs: [
         {
           name: 'gameId',
-          type: 'text',
+          type: 'number',
           label: 'Spiel ID',
           placeholder: ''
         }

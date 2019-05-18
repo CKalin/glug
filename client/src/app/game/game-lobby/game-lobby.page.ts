@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {GameService, Player} from '../service/game.service';
+import {GameService} from '../service/game.service';
+import {Player} from '../service/player';
 
 @Component({
   templateUrl: 'game-lobby.page.html',

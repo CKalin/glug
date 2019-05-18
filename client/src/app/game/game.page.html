@@ -8,13 +8,17 @@
 
 <ion-content>
   <div class="ion-padding">
-    <h5>Willkommen zu Glug - das Trinkspiel!</h5>
-    <ion-item>
+    <div class="logo">
+      <img src="assets/icon/favicon.png" />
+      <p>Willkommen zu Glug - das Trinkspiel!</p>
+    </div>
+    <ion-item no-padding>
       <ion-label position="stacked">Dein Name</ion-label>
       <ion-input [ngModel]="name" (ngModelChange)="nameChanged($event)" placeholder=""></ion-input>
     </ion-item>
-    <p>Möchtest du ein Spiel erstellen oder einem Spiel beitreten?</p>
     <ion-button [disabled]="!name" expand="block" color="primary" (click)="joinGame()">Spiel Beitreten</ion-button>
     <ion-button [disabled]="!name" expand="block" color="light" (click)="createGame()">Spiel Erstellen</ion-button>
+    <br />
+    <ion-button color="light" expand="block" routerLink="statistics">Statistik</ion-button>
   </div>
 </ion-content>

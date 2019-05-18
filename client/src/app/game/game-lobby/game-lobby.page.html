@@ -7,14 +7,14 @@
 </ion-header>
 
 <ion-content>
+  <ion-list>
+    <ion-list-header>Teilnehmer</ion-list-header>
+    <ion-item *ngFor="let p of participants">
+      <ion-label>{{p.name}}<ion-text color="primary" *ngIf="p.isLeader"> (Spielleiter)</ion-text></ion-label>
+      <ion-note slot="end" *ngIf="p.isYou">Du</ion-note>
+    </ion-item>
+  </ion-list>
   <div class="ion-padding">
-    <h5>Teilnehmer</h5>
-    <ion-list>
-      <ion-item *ngFor="let p of participants">
-        {{p.name}}
-        <ion-note slot="end" *ngIf="p.isYou">Du</ion-note>
-      </ion-item>
-    </ion-list>
     <p>Teilnahmecode: <b>{{code}}</b></p>
     <ion-text color="primary">
       <p *ngIf="mode=='join'">Bitte warte bis der Spielleiter das Spiel startet.</p>

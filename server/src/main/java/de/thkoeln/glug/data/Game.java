@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,32 +28,36 @@ public class Game {
 	private Set<Player> players;
 	@OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Round> rounds;
-	private String accessionCode;
+	private String accessCode;
 	@Column
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
 
-	
+
 	public Game(Player gamemaster, String accessionCode){
 		this.setGamemaster(gamemaster);
-		this.setAccessionCode(accessionCode);
-		this.setCreateDateTime(LocalDateTime.now()); 
+		this.setAccessCode(accessionCode);
+		this.setCreateDateTime(LocalDateTime.now());
 		this.setPlayers(new HashSet<Player>());
 		this.setRounds(new HashSet<Round>());
 		this.JoinGame(gamemaster, accessionCode);
 	}
 
+	public Game() {
+
+	}
+
 	public boolean JoinGame(Player player, String accessionCode){
-		if (this.getAccessionCode().equalsIgnoreCase(accessionCode)){
+		if (this.getAccessCode().equalsIgnoreCase(accessionCode)){
 			return this.getPlayers().add(player);
 		}
 		return false;
 	}
-	
+
 	public boolean QuitGame(Player player){
 		return this.players.remove(player);
 	}
-	
+
 	public Round newRound(){
 		Round round = new Round(this);
 		this.rounds.add(round);
@@ -82,11 +87,11 @@ public class Game {
 	public void setRounds(Set<Round> rounds) {
 		this.rounds = rounds;
 	}
-	public String getAccessionCode() {
-		return accessionCode;
+	public String getAccessCode() {
+		return accessCode;
 	}
-	public void setAccessionCode(String accessionCode) {
-		this.accessionCode = accessionCode;
+	public void setAccessCode(String accessionCode) {
+		this.accessCode = accessionCode;
 	}
 	public LocalDateTime getCreateDateTime() {
 		return createDateTime;

@@ -17,9 +17,8 @@ public class Scheduler {
 	@Autowired
     private SimpMessagingTemplate template;
 
-	@Scheduled(fixedRate=3000)
+	//@Scheduled(fixedRate=3000)
     public void sendMessage() {
-		System.out.println("test");
 		LOG.info("Scheduler running");
 		template.convertAndSend("/topic/game", "TEST");
     }

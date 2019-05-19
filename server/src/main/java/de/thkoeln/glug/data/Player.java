@@ -15,32 +15,39 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Player {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	private String name;
-	private String password;
+	@JsonIgnore
 	@OneToMany(mappedBy = "gamemaster", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private Set<Game> gamesLeaded;
+	@JsonIgnore
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private Set<Game> games;
+	@JsonIgnore
 	@OneToMany(mappedBy = "player")
 	private Set<ChallengeResponse> challengeResponses;
+	@JsonIgnore
 	@OneToMany(mappedBy = "player")
 	private Set<RoundResult> roundResults;
+	@JsonIgnore
 	@OneToMany(mappedBy = "fromPlayer")
 	private Set<SlugAllocation> slugsAllocated;
+	@JsonIgnore
 	@OneToMany(mappedBy = "toPlayer")
 	private Set<SlugAllocation> slugsRecieved;
+	@JsonIgnore
 	@Column
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
 
-	public Player(String name, String password){
+	public Player(String name){
 		this.setName(name);
-		this.setPassword(password);
 		this.setCreateDateTime(LocalDateTime.now());
 
 		this.setGamesLeaded(new HashSet<Game>());
@@ -66,12 +73,7 @@ public class Player {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
+
 	public Set<Game> getGamesLeaded() {
 		return gamesLeaded;
 	}

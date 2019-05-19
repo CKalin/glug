@@ -23,14 +23,12 @@ public class Application {
 
 	@PostConstruct
 	private void initDatabase() {
-		Player helmutchecker = new Player("Player1", "pw1");
+		Player helmutchecker = new Player("Player1");
 		helmutchecker.setName("Helmutchecker");
-		helmutchecker.setPassword("test123");
 		playerRepository.save(helmutchecker);
 
-		Player kaema7 = new Player("Player2", "pw2");
+		Player kaema7 = new Player("Player2");
 		kaema7.setName("kaema7");
-		kaema7.setPassword("jonage");
 		playerRepository.save(kaema7);
 
 		getAllPlayers().forEach(player -> {

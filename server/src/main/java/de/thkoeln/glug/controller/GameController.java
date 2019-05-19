@@ -22,7 +22,6 @@ public class GameController {
 	@MessageMapping("/game")
     @SendTo("/topic/game")
     public String sendMessage(@Payload String chatMessage) {
-		LOG.info(chatMessage);
         return chatMessage;
     }
 }

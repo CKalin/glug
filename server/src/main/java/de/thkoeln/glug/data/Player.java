@@ -37,18 +37,21 @@ public class Player {
 	@Column
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
-	
+
 	public Player(String name, String password){
 		this.setName(name);
 		this.setPassword(password);
 		this.setCreateDateTime(LocalDateTime.now());
-		
+
 		this.setGamesLeaded(new HashSet<Game>());
 		this.setGames(new HashSet<Game>());
 		this.setChallengeResponses(new HashSet<ChallengeResponse>());
 		this.setRoundResults(new HashSet<RoundResult>());
 		this.setSlugsAllocated(new HashSet<SlugAllocation>());
 		this.setSlugsRecieved(new HashSet<SlugAllocation>());
+	}
+	public Player() {
+
 	}
 
 	public Integer getId() {

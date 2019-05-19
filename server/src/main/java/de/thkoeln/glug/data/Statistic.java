@@ -6,7 +6,19 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import de.thkoeln.glug.data.Constants.color;
+import de.thkoeln.glug.data.Constants.objectShape;
 
 public class Statistic {
 	private String statisticOne;
@@ -29,7 +41,6 @@ public class Statistic {
 		this.setStatisticSix(round, player);
 	}
 	
-
 	public String getStatisticOne() {
 		return statisticOne;
 	}

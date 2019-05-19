@@ -1,7 +1,9 @@
 package de.thkoeln.glug.data;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -27,6 +29,14 @@ public class QuizChallenge {
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
 
+	public QuizChallenge(Round round){
+		this.setRound(round);
+		this.setCreateDateTime(LocalDateTime.now());
+		this.setChallenges(new HashSet<Challenge>());
+		for (int i = 0; i < 5; i++) {
+			this.getChallenges().add(new Challenge(this));
+		}
+	}
 	public Integer getId() {
 		return id;
 	}

@@ -3,7 +3,6 @@ package de.thkoeln.glug.data;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

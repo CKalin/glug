@@ -1,8 +1,8 @@
 export class Player {
   name: string;
   id: string;
-  isYou = false;
-  isLeader = false;
+  you = false;
+  leader = false;
   glugs = 0;
   glugsAcknowledged = false;
 }

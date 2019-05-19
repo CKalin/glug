@@ -5,21 +5,19 @@ import {GameService} from './service/game.service';
 
 @Component({
   templateUrl: 'game.page.html',
-  styleUrls: ['game.page.scss'],
+  styleUrls: ['game.page.scss']
 })
 export class GamePage implements OnInit {
-  name = '';
+  public playerName = '';
 
   constructor(private gameService: GameService, private router: Router, private alertController: AlertController) {
   }
 
   ngOnInit(): void {
-    this.name = this.gameService.playerName;
   }
 
   createGame() {
-    this.gameService.createGame();
-    this.router.navigateByUrl('lobby/create');
+    this.gameService.createGame(this.playerName);
   }
 
   joinGame() {
@@ -46,7 +44,13 @@ export class GamePage implements OnInit {
         }, {
           text: 'Beitreten',
           handler: (form) => {
-            this.gameService.joinGame(form.gameId);
+            this.gameService.validateAccessCode(form.gameId).subscribe(valid => {
+              if (valid) {
+                this.gameService.joinGame(this.playerName, form.gameId);
+              } else {
+                this.presetInvalidCodePopup();
+              }
+            });
           }
         }
       ]
@@ -55,8 +59,14 @@ export class GamePage implements OnInit {
     await alert.present();
   }
 
-  nameChanged(name: any) {
-    this.name = name;
-    this.gameService.playerName = name;
+  async presetInvalidCodePopup() {
+    const alert = await this.alertController.create({
+      header: 'Fehler',
+      subHeader: 'Code Ungültig',
+      message: 'Bitte überprüfe den Code und versuche es erneut.',
+      buttons: ['OK']
+    });
+
+    await alert.present();
   }
 }

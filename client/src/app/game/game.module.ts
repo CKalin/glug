@@ -1,4 +1,5 @@
 import {CommonModule} from '@angular/common';
+import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
@@ -16,6 +17,7 @@ import {StatisticsPage} from './statistic/statistics-page.component';
 @NgModule({
   imports: [
     CommonModule,
+    HttpClientModule,
     FormsModule,
     IonicModule,
     GoogleChartsModule.forRoot(),

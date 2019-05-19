@@ -28,18 +28,18 @@
           <img slot="end" src="assets/icon/favicon.png"/>
         </span>
         <ion-label>{{player.name}}</ion-label>
-        <ion-note slot="end" *ngIf="player.isYou">Du</ion-note>
+        <ion-note slot="end" *ngIf="player.you">Du</ion-note>
         <ion-icon slot="end" *ngIf="player.glugsAcknowledged" name="checkmark"></ion-icon>
       </ion-item>
       <ion-list-header *ngIf="!allAcknowledged()">
         Bitte warte bis alle Glugs erledigt sind.
       </ion-list-header>
-      <ion-list-header *ngIf="!you.isLeader && allAcknowledged()">
+      <ion-list-header *ngIf="!you.leader && allAcknowledged()">
         Bitte warte bis der Spielleiter eine neue Runde startet.
       </ion-list-header>
     </ion-list>
 
-    <ion-button *ngIf="you.isLeader" (click)="startNewRound()" [disabled]="!allAcknowledged()" expand="block" color="primary">
+    <ion-button *ngIf="you.leader" (click)="startNewRound()" [disabled]="!allAcknowledged()" expand="block" color="primary">
       Neue Runde Starten
     </ion-button>
   </div>

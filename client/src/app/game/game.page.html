@@ -14,10 +14,10 @@
     </div>
     <ion-item no-padding>
       <ion-label position="stacked">Dein Name</ion-label>
-      <ion-input [ngModel]="name" (ngModelChange)="nameChanged($event)" placeholder=""></ion-input>
+      <ion-input [(ngModel)]="playerName" placeholder=""></ion-input>
     </ion-item>
-    <ion-button [disabled]="!name" expand="block" color="primary" (click)="joinGame()">Spiel Beitreten</ion-button>
-    <ion-button [disabled]="!name" expand="block" color="light" (click)="createGame()">Spiel Erstellen</ion-button>
+    <ion-button [disabled]="!playerName" expand="block" color="primary" (click)="joinGame()">Spiel Beitreten</ion-button>
+    <ion-button [disabled]="!playerName" expand="block" color="light" (click)="createGame()">Spiel Erstellen</ion-button>
     <br />
     <ion-button color="light" expand="block" routerLink="statistics">Statistik</ion-button>
   </div>

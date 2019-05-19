@@ -10,8 +10,8 @@
   <ion-list>
     <ion-list-header>Teilnehmer</ion-list-header>
     <ion-item *ngFor="let p of participants">
-      <ion-label>{{p.name}}<ion-text color="primary" *ngIf="p.isLeader"> (Spielleiter)</ion-text></ion-label>
-      <ion-note slot="end" *ngIf="p.isYou">Du</ion-note>
+      <ion-label>{{p.name}}<ion-text color="primary" *ngIf="p.leader"> (Spielleiter)</ion-text></ion-label>
+      <ion-note slot="end" *ngIf="p.you">Du</ion-note>
     </ion-item>
   </ion-list>
   <div class="ion-padding">

@@ -1,6 +1,9 @@
 import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {map} from 'rxjs/operators';
+import * as SockJS from 'sockjs-client';
+import * as Stomp from 'stompjs/lib/stomp.js';
 import {Challenge} from './challenge';
 import {Message} from './message';
 import {Player} from './player';
@@ -54,6 +57,28 @@ export class GameService {
   private timeLeft: Subject<number> = new BehaviorSubject(
       5 // Test Data
   );
+  private serverUrl = 'http://abc';
+  private stompClient: Stomp;
+
+  constructor(private router: Router) {
+    this.initializeWebSocketConnection();
+  }
+
+  private initializeWebSocketConnection() {
+    const ws = new SockJS(this.serverUrl);
+    this.stompClient = Stomp.over(ws);
+    this.stompClient.connect({}, this.onConnectionSuccess);
+  }
+
+  onConnectionSuccess(frame) {
+    this.stompClient.subscribe('/chat', (message) => {
+      console.log(message.body);
+    });
+  }
+
+  sendMessage(message) {
+    this.stompClient.send('/app/send/message' , {}, message);
+  }
 
   createGame() {
   }

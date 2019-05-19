@@ -1,24 +1,8 @@
 package de.thkoeln.glug.data;
 
-import java.time.LocalDateTime;
-import java.lang.*;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.CreationTimestamp;
-
-import de.thkoeln.glug.data.Constants.color;
-import de.thkoeln.glug.data.Constants.objectShape;
+import de.thkoeln.glug.data.Player;
+import de.thkoeln.glug.data.PlayerRepository;
+import de.thkoeln.glug.data.SlugAllocationRepository; 
 
 public class Statistic {
 	private String statisticOne;
@@ -27,23 +11,35 @@ public class Statistic {
 	private String statisticFour;
 	private String statisticFive;
 	private String statisticSix;
+	private Game game;
 	private Round round;
 	String player;
 	
+	PlayerRepository playerRepository;
+	GameRepository gameRepository;
+	RoundRepository roundrepository;
+	SlugAllocationRepository slugAllocationRepository; 
 	
-	public Statistic(String player, Round round){
+	public Iterable<Player> getAllPlayers() {
+		return playerRepository.findAll();
+	}
+	public Iterable<Player> getPlayersWithName(String name) {
+		return playerRepository.findByName(name);
+	}
+	
+	public Statistic(String player, Game game){
 		this.setPlayer(player);
-		this.setStatisticOne(round);
-		this.setStatisticTwo(round);
-		this.setStatisticThree(round);
-		this.setStatisticFour(round);
-		this.setStatisticFive(round, player);
-		this.setStatisticSix(round, player);
+		this.setStatisticOne(game);
+		this.setStatisticTwo(game);
+		this.setStatisticThree(game);
+		this.setStatisticFour(game);
+		this.setStatisticFive(game, player);
+		this.setStatisticSix(game, player);
 	}
 	
 	public String getStatisticOne() {
 		return statisticOne;
-	}
+	} 
 	public String getStatisticTwo() {
 		return statisticTwo;
 	}
@@ -59,8 +55,8 @@ public class Statistic {
 	public String getStatisticSix() {
 		return statisticSix;
 	}
-	public void setStatisticOne(Round round) {
-		StringBuilder statOneText = new StringBuilder();
+	public void setStatisticOne(Game game) {
+		StringBuilder statOneText = new StringBuilder();		
 		statOneText.append("Der Trinker: ");
 		statOneText.append("Peter ");//  Select
 		statOneText.append("musste ");
@@ -68,7 +64,7 @@ public class Statistic {
 	    statOneText.append("Schlücke trinken.");
 		this.statisticOne = statOneText.toString();
 	}
-	public void setStatisticTwo(Round round) {
+	public void setStatisticTwo(Game game) {
 		StringBuilder statTwoText = new StringBuilder();
 		statTwoText.append("Der Teufel: ");
 		statTwoText.append("Basti ");// Select
@@ -77,7 +73,7 @@ public class Statistic {
 	    statTwoText.append("Schlücke verteilt.");
 		this.statisticTwo = statTwoText.toString();	
 		}
-	public void setStatisticThree(Round round) {
+	public void setStatisticThree(Game game) {
 		StringBuilder statThreeText = new StringBuilder();
 		statThreeText.append("Der Verlierer: ");
 		statThreeText.append("Marius ");// Select
@@ -86,7 +82,7 @@ public class Statistic {
 	    statThreeText.append("Schlücke verteilt.");
 		this.statisticThree = statThreeText.toString();	
 		}
-	public void setStatisticFour(Round round) {
+	public void setStatisticFour(Game game) {
 		StringBuilder statFourText = new StringBuilder();
 		statFourText.append("Der Nüchterne: ");
 		statFourText.append("Maria ");// Select
@@ -95,7 +91,7 @@ public class Statistic {
 		statFourText.append("Schlücke getrunken.");
 		this.statisticFour = statFourText.toString();	
 		}
-	public void setStatisticFive(Round round, String player) {
+	public void setStatisticFive(Game game, String player) {
 		StringBuilder statFiveText = new StringBuilder();
 		statFiveText.append("Marius ");// Select
 		statFiveText.append("hat dir die meisten Schlücke ");
@@ -103,8 +99,12 @@ public class Statistic {
 		statFiveText.append("gegeben.");
 		this.statisticFive = statFiveText.toString();	
 		}
-	public void setStatisticSix(Round round, String player) {
+	public void setStatisticSix(Game game, String player) {
 		StringBuilder statSixText = new StringBuilder();
+		//roundrepository.findByGame(game);
+		
+		
+		
 		statSixText.append("Du hast ");
 		statSixText.append("Peter ");//Select
 		statSixText.append("am meisten Schlücke ");

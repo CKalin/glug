@@ -1,14 +1,8 @@
 package de.thkoeln.glug.data;
 
-<<<<<<< HEAD
 import de.thkoeln.glug.data.Player;
 import de.thkoeln.glug.data.PlayerRepository;
 import de.thkoeln.glug.data.SlugAllocationRepository; 
-=======
-
-
-
->>>>>>> 2f59ff2cb08f5f972e3654dd24e94d14145db2ef
 
 public class Statistic {
 	private String statisticOne;
@@ -17,7 +11,6 @@ public class Statistic {
 	private String statisticFour;
 	private String statisticFive;
 	private String statisticSix;
-	private Game game;
 	private Round round;
 	String player;
 	

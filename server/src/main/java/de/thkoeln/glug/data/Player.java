@@ -31,9 +31,6 @@ public class Player {
 	private Set<Game> games;
 	@JsonIgnore
 	@OneToMany(mappedBy = "player")
-	private Set<ChallengeResponse> challengeResponses;
-	@JsonIgnore
-	@OneToMany(mappedBy = "player")
 	private Set<RoundResult> roundResults;
 	@JsonIgnore
 	@OneToMany(mappedBy = "fromPlayer")
@@ -55,7 +52,6 @@ public class Player {
 
 		this.setGamesLeaded(new HashSet<Game>());
 		this.setGames(new HashSet<Game>());
-		this.setChallengeResponses(new HashSet<ChallengeResponse>());
 		this.setRoundResults(new HashSet<RoundResult>());
 		this.setSlugsAllocated(new HashSet<SlugAllocation>());
 		this.setSlugsRecieved(new HashSet<SlugAllocation>());
@@ -88,12 +84,6 @@ public class Player {
 	}
 	public void setGames(Set<Game> games) {
 		this.games = games;
-	}
-	public Set<ChallengeResponse> getChallengeResponses() {
-		return challengeResponses;
-	}
-	public void setChallengeResponses(Set<ChallengeResponse> challengeResponses) {
-		this.challengeResponses = challengeResponses;
 	}
 	public Set<RoundResult> getRoundResults() {
 		return roundResults;

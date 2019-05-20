@@ -32,19 +32,6 @@ public class Round {
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
 
-	public Round(Game game){
-		this.setGame(game);
-		this.setCreateDateTime(LocalDateTime.now());
-		this.setQuizChallenges(new HashSet<QuizChallenge>());
-		this.setRoundResults(new HashSet<RoundResult>());
-		this.setSlugAllocations(new HashSet<SlugAllocation>());
-	}
-	
-	public QuizChallenge newQuizChallenge(){
-		QuizChallenge quizChallenge = new QuizChallenge(this);
-		quizChallenges.add(quizChallenge);
-		return quizChallenge;
-	}
 	public Integer getId() {
 		return id;
 	}
@@ -81,6 +68,4 @@ public class Round {
 	public void setCreateDateTime(LocalDateTime createDateTime) {
 		this.createDateTime = createDateTime;
 	}
-
-
 }

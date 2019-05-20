@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class Constants {
 	public static enum color{Rot, Gelb, Grün, Schwarz, Blau, Magenta}
-	public static enum objectShape{Dreieck, Rechteck, Kreis, Sechseck, Raute, Trapez, Parallelogramm}
+	public static enum objectShape{Dreieck, Quadrat, Kreis, Sechseck, Parallelogramm, Trapez, Fünfeck}
 	public static enum questionTyp{FarbeHintergrund, FarbeObjekt, FarbeObjektrand, Text, FormObjekt}
-	
+
 	public static ArrayList<color> getArrayListColors(){
 		ArrayList<color> colorArrayList = new ArrayList<color>();
 		for (color color : color.values()) {

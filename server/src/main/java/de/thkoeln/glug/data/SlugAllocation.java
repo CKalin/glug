@@ -20,7 +20,6 @@ public class SlugAllocation {
 	private Player fromPlayer;
 	@ManyToOne
 	private Player toPlayer;
-	private Integer slugCount;
 	@Column
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
@@ -48,12 +47,6 @@ public class SlugAllocation {
 	}
 	public void setToPlayer(Player toPlayer) {
 		this.toPlayer = toPlayer;
-	}
-	public Integer getSlugCount() {
-		return slugCount;
-	}
-	public void setSlugCount(Integer slugCount) {
-		this.slugCount = slugCount;
 	}
 	public LocalDateTime getCreateDateTime() {
 		return createDateTime;

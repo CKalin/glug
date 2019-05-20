@@ -1,4 +1,4 @@
-package de.thkoeln.glug.controller;
+package de.thkoeln.glug.communication;
 
 
 public class PlayerResponse {

@@ -1,7 +1,6 @@
 package de.thkoeln.glug.data;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -15,6 +14,8 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class QuizChallenge {
 	@Id
@@ -22,20 +23,23 @@ public class QuizChallenge {
 	private Integer id;
 	@ManyToOne
 	private Round round;
+	private String colorBackground;
+	private String colorObject;
+	private String colorObjectBorder;
+	private String colorText;
+	private String text;
+	private String shape;
+	private String questionType;
+	private String question;
 	@OneToMany(mappedBy = "quizChallenge", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<Challenge> challenges;
+	private Set<QuizAnswer> answers;
+	@JsonIgnore
+	@ManyToOne
+	private Player winner;
 	@Column
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
 
-	public QuizChallenge(Round round){
-		this.setRound(round);
-		this.setCreateDateTime(LocalDateTime.now());
-		this.setChallenges(new HashSet<Challenge>());
-		for (int i = 0; i < 5; i++) {
-			this.getChallenges().add(new Challenge(this));
-		}
-	}
 	public Integer getId() {
 		return id;
 	}
@@ -48,11 +52,59 @@ public class QuizChallenge {
 	public void setRound(Round round) {
 		this.round = round;
 	}
-	public Set<Challenge> getChallenges() {
-		return challenges;
+	public String getColorBackground() {
+		return colorBackground;
 	}
-	public void setChallenges(Set<Challenge> challenges) {
-		this.challenges = challenges;
+	public void setColorBackground(String colorBackground) {
+		this.colorBackground = colorBackground;
+	}
+	public String getColorObject() {
+		return colorObject;
+	}
+	public void setColorObject(String colorObject) {
+		this.colorObject = colorObject;
+	}
+	public String getColorObjectBorder() {
+		return colorObjectBorder;
+	}
+	public void setColorObjectBorder(String colorObjectBorder) {
+		this.colorObjectBorder = colorObjectBorder;
+	}
+	public String getColorText() {
+		return colorText;
+	}
+	public void setColorText(String colorText) {
+		this.colorText = colorText;
+	}
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
+	}
+	public String getShape() {
+		return shape;
+	}
+	public void setShape(String shape) {
+		this.shape = shape;
+	}
+	public String getQuestionType() {
+		return questionType;
+	}
+	public void setQuestionType(String questionType) {
+		this.questionType = questionType;
+	}
+	public String getQuestion() {
+		return question;
+	}
+	public void setQuestion(String question) {
+		this.question = question;
+	}
+	public Set<QuizAnswer> getAnswers() {
+		return answers;
+	}
+	public void setAnswers(Set<QuizAnswer> answers) {
+		this.answers = answers;
 	}
 	public LocalDateTime getCreateDateTime() {
 		return createDateTime;
@@ -60,6 +112,11 @@ public class QuizChallenge {
 	public void setCreateDateTime(LocalDateTime createDateTime) {
 		this.createDateTime = createDateTime;
 	}
-
+	public Player getWinner() {
+		return winner;
+	}
+	public void setWinner(Player winner) {
+		this.winner = winner;
+	}
 
 }

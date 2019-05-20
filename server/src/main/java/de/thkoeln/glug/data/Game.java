@@ -33,36 +33,6 @@ public class Game {
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
 
-
-	public Game(Player gamemaster, String accessionCode){
-		this.setGamemaster(gamemaster);
-		this.setAccessCode(accessionCode);
-		this.setCreateDateTime(LocalDateTime.now());
-		this.setPlayers(new HashSet<Player>());
-		this.setRounds(new HashSet<Round>());
-		this.JoinGame(gamemaster, accessionCode);
-	}
-
-	public Game() {
-
-	}
-
-	public boolean JoinGame(Player player, String accessionCode){
-		if (this.getAccessCode().equalsIgnoreCase(accessionCode)){
-			return this.getPlayers().add(player);
-		}
-		return false;
-	}
-
-	public boolean QuitGame(Player player){
-		return this.players.remove(player);
-	}
-
-	public Round newRound(){
-		Round round = new Round(this);
-		this.rounds.add(round);
-		return round;
-	}
 	public Integer getId() {
 		return id;
 	}

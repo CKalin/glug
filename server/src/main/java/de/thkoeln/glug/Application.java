@@ -7,8 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import de.thkoeln.glug.data.ChallengeFactory;
 import de.thkoeln.glug.data.Player;
-import de.thkoeln.glug.data.PlayerRepository;
+import de.thkoeln.glug.data.QuizChallenge;
+import de.thkoeln.glug.data.repository.PlayerRepository;
 
 @SpringBootApplication
 public class Application {
@@ -38,6 +41,8 @@ public class Application {
 		getPlayersWithName("Helmutchecker").forEach(player -> {
 			logger.info("Found player with name " + player.getName() + " with id " + player.getId());
 		});
+		QuizChallenge testChallenge = ChallengeFactory.generateRandomChallenge();
+		QuizChallenge testChallenge2 = ChallengeFactory.generateRandomChallenge();
 	}
 
 	public Iterable<Player> getAllPlayers() {

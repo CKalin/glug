@@ -42,6 +42,9 @@ public class Player {
 	@OneToMany(mappedBy = "toPlayer")
 	private Set<SlugAllocation> slugsRecieved;
 	@JsonIgnore
+	@OneToMany(mappedBy = "winner")
+	private Set<QuizChallenge> wonChallenges;
+	@JsonIgnore
 	@Column
 	@CreationTimestamp
 	private LocalDateTime createDateTime;

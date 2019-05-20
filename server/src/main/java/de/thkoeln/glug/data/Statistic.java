@@ -1,14 +1,11 @@
 package de.thkoeln.glug.data;
 
-<<<<<<< HEAD
 import de.thkoeln.glug.data.Player;
-import de.thkoeln.glug.data.PlayerRepository;
-import de.thkoeln.glug.data.SlugAllocationRepository; 
-=======
+import de.thkoeln.glug.data.repository.GameRepository;
+import de.thkoeln.glug.data.repository.PlayerRepository;
+import de.thkoeln.glug.data.repository.RoundRepository;
+import de.thkoeln.glug.data.repository.SlugAllocationRepository;
 
-
-
->>>>>>> 2f59ff2cb08f5f972e3654dd24e94d14145db2ef
 
 public class Statistic {
 	private String statisticOne;
@@ -20,19 +17,19 @@ public class Statistic {
 	private Game game;
 	private Round round;
 	String player;
-	
+
 	PlayerRepository playerRepository;
 	GameRepository gameRepository;
 	RoundRepository roundrepository;
-	SlugAllocationRepository slugAllocationRepository; 
-	
+	SlugAllocationRepository slugAllocationRepository;
+
 	public Iterable<Player> getAllPlayers() {
 		return playerRepository.findAll();
 	}
 	public Iterable<Player> getPlayersWithName(String name) {
 		return playerRepository.findByName(name);
 	}
-	
+
 	public Statistic(String player, Game game){
 		this.setPlayer(player);
 		this.setStatisticOne(game);
@@ -42,10 +39,10 @@ public class Statistic {
 		this.setStatisticFive(game, player);
 		this.setStatisticSix(game, player);
 	}
-	
+
 	public String getStatisticOne() {
 		return statisticOne;
-	} 
+	}
 	public String getStatisticTwo() {
 		return statisticTwo;
 	}
@@ -62,7 +59,7 @@ public class Statistic {
 		return statisticSix;
 	}
 	public void setStatisticOne(Game game) {
-		StringBuilder statOneText = new StringBuilder();		
+		StringBuilder statOneText = new StringBuilder();
 		statOneText.append("Der Trinker: ");
 		statOneText.append("Peter ");//  Select
 		statOneText.append("musste ");
@@ -77,7 +74,7 @@ public class Statistic {
 		statTwoText.append("hat ganze ");
 	    statTwoText.append("30 "); // Select
 	    statTwoText.append("Schlücke verteilt.");
-		this.statisticTwo = statTwoText.toString();	
+		this.statisticTwo = statTwoText.toString();
 		}
 	public void setStatisticThree(Game game) {
 		StringBuilder statThreeText = new StringBuilder();
@@ -86,7 +83,7 @@ public class Statistic {
 		statThreeText.append("hat nur ");
 		statThreeText.append("5 ");	// Select
 	    statThreeText.append("Schlücke verteilt.");
-		this.statisticThree = statThreeText.toString();	
+		this.statisticThree = statThreeText.toString();
 		}
 	public void setStatisticFour(Game game) {
 		StringBuilder statFourText = new StringBuilder();
@@ -95,7 +92,7 @@ public class Statistic {
 		statFourText.append("musste ");
         statFourText.append("2 "); //Select
 		statFourText.append("Schlücke getrunken.");
-		this.statisticFour = statFourText.toString();	
+		this.statisticFour = statFourText.toString();
 		}
 	public void setStatisticFive(Game game, String player) {
 		StringBuilder statFiveText = new StringBuilder();
@@ -103,24 +100,24 @@ public class Statistic {
 		statFiveText.append("hat dir die meisten Schlücke ");
 		statFiveText.append("(20) "); // Select
 		statFiveText.append("gegeben.");
-		this.statisticFive = statFiveText.toString();	
+		this.statisticFive = statFiveText.toString();
 		}
 	public void setStatisticSix(Game game, String player) {
 		StringBuilder statSixText = new StringBuilder();
 		//roundrepository.findByGame(game);
-		
-		
-		
+
+
+
 		statSixText.append("Du hast ");
 		statSixText.append("Peter ");//Select
 		statSixText.append("am meisten Schlücke ");
 		statSixText.append("(15) "); // Select
 		statSixText.append("gegeben.");
-		this.statisticSix = statSixText.toString();	
-	}	
+		this.statisticSix = statSixText.toString();
+	}
 	public void setRound(Round round) {
 		this.round = round;
-	}	
+	}
 	public Round getRound() {
 		return round;
 	}

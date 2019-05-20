@@ -6,7 +6,6 @@ import de.thkoeln.glug.data.repository.PlayerRepository;
 import de.thkoeln.glug.data.repository.RoundRepository;
 import de.thkoeln.glug.data.repository.SlugAllocationRepository;
 
-
 public class Statistic {
 	private String statisticOne;
 	private String statisticTwo;
@@ -14,7 +13,6 @@ public class Statistic {
 	private String statisticFour;
 	private String statisticFive;
 	private String statisticSix;
-	private Game game;
 	private Round round;
 	String player;
 

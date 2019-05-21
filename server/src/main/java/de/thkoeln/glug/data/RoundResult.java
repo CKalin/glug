@@ -18,7 +18,7 @@ public class RoundResult {
 	private Player player;
 	@ManyToOne
 	private Round round;
-	private Integer slugCountRecieved;
+	private Integer slugCountReceived;
 	private Integer slugCountToSpend;
 	@Column
 	@CreationTimestamp
@@ -42,11 +42,11 @@ public class RoundResult {
 	public void setRound(Round round) {
 		this.round = round;
 	}
-	public Integer getSlugCountRecieved() {
-		return slugCountRecieved;
+	public Integer getSlugCountReceived() {
+		return slugCountReceived;
 	}
-	public void setSlugCountRecieved(Integer slugCountRecieved) {
-		this.slugCountRecieved = slugCountRecieved;
+	public void setSlugCountRecieved(Integer slugCountReceived) {
+		this.slugCountReceived = slugCountReceived;
 	}
 	public Integer getSlugCountToSpend() {
 		return slugCountToSpend;

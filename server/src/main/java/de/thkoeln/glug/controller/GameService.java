@@ -105,7 +105,7 @@ public class GameService {
 		return roundRepository.findById(roundId).orElseThrow(() -> new RuntimeException("Round not existing"));
 	}
 
-	private Player fetchPlayer(int playerId) {
+	public Player fetchPlayer(int playerId) {
 		return playerRepository.findById(playerId).orElseThrow(() -> new RuntimeException("Player not existing"));
 	}
 

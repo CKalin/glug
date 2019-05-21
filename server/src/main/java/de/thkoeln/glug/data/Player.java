@@ -37,7 +37,7 @@ public class Player {
 	private Set<SlugAllocation> slugsAllocated;
 	@JsonIgnore
 	@OneToMany(mappedBy = "toPlayer")
-	private Set<SlugAllocation> slugsRecieved;
+	private Set<SlugAllocation> slugsReceived;
 	@JsonIgnore
 	@OneToMany(mappedBy = "winner")
 	private Set<QuizChallenge> wonChallenges;
@@ -97,11 +97,11 @@ public class Player {
 	public void setSlugsAllocated(Set<SlugAllocation> slugsAllocated) {
 		this.slugsAllocated = slugsAllocated;
 	}
-	public Set<SlugAllocation> getSlugsRecieved() {
-		return slugsRecieved;
+	public Set<SlugAllocation> getSlugsReceived() {
+		return slugsReceived;
 	}
-	public void setSlugsRecieved(Set<SlugAllocation> slugsRecieved) {
-		this.slugsRecieved = slugsRecieved;
+	public void setSlugsRecieved(Set<SlugAllocation> slugsReceived) {
+		this.slugsReceived = slugsReceived;
 	}
 	public LocalDateTime getCreateDateTime() {
 		return createDateTime;

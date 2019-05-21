@@ -16,7 +16,7 @@ public class RoundFinishedMessage {
 			PlayerResult playerResult = new PlayerResult();
 			playerResult.setPlayerId(result.getPlayer().getId());
 			playerResult.setSlugCountToAllocate(result.getSlugCountToSpend());
-			playerResult.setSlugCountRecieved(result.getSlugCountRecieved());
+			playerResult.setSlugCountReceived(result.getSlugCountReceived());
 			this.results.add(playerResult);
 			roundId = result.getRound().getId();
 		});

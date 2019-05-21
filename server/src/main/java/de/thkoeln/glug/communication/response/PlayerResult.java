@@ -3,7 +3,7 @@ package de.thkoeln.glug.communication.response;
 public class PlayerResult {
 	private int playerId;
 	private int slugCountToAllocate;
-	private int slugCountRecieved;
+	private int slugCountReceived;
 
 	public int getPlayerId() {
 		return playerId;
@@ -17,11 +17,11 @@ public class PlayerResult {
 	public void setSlugCountToAllocate(int slugCountToAllocate) {
 		this.slugCountToAllocate = slugCountToAllocate;
 	}
-	public int getSlugCountRecieved() {
-		return slugCountRecieved;
+	public int getSlugCountReceived() {
+		return slugCountReceived;
 	}
-	public void setSlugCountRecieved(int slugCountRecieved) {
-		this.slugCountRecieved = slugCountRecieved;
+	public void setSlugCountReceived(int slugCountReceived) {
+		this.slugCountReceived = slugCountReceived;
 	}
 
 }

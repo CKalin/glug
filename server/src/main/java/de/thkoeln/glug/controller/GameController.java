@@ -24,7 +24,8 @@ import de.thkoeln.glug.communication.response.AllSlugsAllocatedMessage;
 import de.thkoeln.glug.communication.response.AnswerChallengeValidationMessage;
 import de.thkoeln.glug.communication.response.CountdownMessage;
 import de.thkoeln.glug.communication.response.NewChallengeMessage;
-import de.thkoeln.glug.communication.response.PlayerResponse;
+import de.thkoeln.glug.communication.response.PlayerBean;
+import de.thkoeln.glug.communication.response.PlayerJoinedMessage;
 import de.thkoeln.glug.communication.response.RoundFinishedMessage;
 import de.thkoeln.glug.communication.response.SlugAllocatedMessage;
 import de.thkoeln.glug.data.Game;
@@ -51,16 +52,18 @@ public class GameController {
 	GameService gameService;
 
 	@MessageMapping("/game/{accessCode}/player")
-    @SendTo("/topic/game/{accessCode}/players")
-    public Set<PlayerResponse> joinGame(@DestinationVariable String accessCode, @Payload JoinGameRequest joinGameRequest) {
+    @SendTo("/topic/game/{accessCode}")
+    public PlayerJoinedMessage joinGame(@DestinationVariable String accessCode, @Payload JoinGameRequest joinGameRequest) {
 		LOG.info("new player {} for game {}", joinGameRequest.getPlayerId(), accessCode);
 		Set<Player> players = gameService.addPlayer(accessCode, joinGameRequest.getPlayerId());
 		Player gamemaster = gameService.getGamemaster(accessCode);
-		Set<PlayerResponse> playersResponse = new HashSet<PlayerResponse>();
+		Set<PlayerBean> inGamePlayers = new HashSet<PlayerBean>();
 		players.forEach(player -> {
-			playersResponse.add(new PlayerResponse(player.getId(), player.getName(), player.getId() == gamemaster.getId()));
+			inGamePlayers.add(new PlayerBean(player.getId(), player.getName(), player.getId() == gamemaster.getId()));
 		});
-        return playersResponse;
+		Player joinedPlayer = gameService.fetchPlayer(joinGameRequest.getPlayerId());
+		PlayerBean joinedPlayerBean = new PlayerBean(joinedPlayer.getId(), joinedPlayer.getName(), joinedPlayer.getId() == gamemaster.getId());
+        return new PlayerJoinedMessage(joinedPlayerBean, inGamePlayers);
     }
 
 	@MessageMapping("/game/{accessCode}/start")

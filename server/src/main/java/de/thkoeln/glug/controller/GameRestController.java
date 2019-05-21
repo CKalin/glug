@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.thkoeln.glug.communication.response.GameCreatedResponse;
 import de.thkoeln.glug.data.Game;
 import de.thkoeln.glug.data.Player;
 import de.thkoeln.glug.data.repository.GameRepository;
@@ -22,12 +23,12 @@ public class GameRestController {
 	GameRepository gameRepository;
 
 	@GetMapping("/create")
-    public String createGame() {
+    public GameCreatedResponse createGame() {
 		Game game = new Game();
 		String accessCode = String.valueOf((int) Math.floor(Math.random()*100000+10000)%100000);
 		game.setAccessCode(accessCode);
 		gameRepository.save(game);
-		return accessCode;
+		return new GameCreatedResponse(game);
     }
 
 	@GetMapping("/isPresent")

@@ -1,13 +1,13 @@
-package de.thkoeln.glug.communication;
+package de.thkoeln.glug.communication.response;
+
+import de.thkoeln.glug.communication.request.AnswerChallengeRequest;
 
 public class AnswerChallengeValidationMessage {
 	private String action = "CHALLENGE_ANSWERED";
-	private int challengeId;
 	private int playerId;
 	private boolean correct;
 
 	public AnswerChallengeValidationMessage(AnswerChallengeRequest answerChallengeRequest, boolean answeredCorrectly) {
-		this.challengeId = answerChallengeRequest.getChallengeId();
 		this.playerId = answerChallengeRequest.getPlayerId();
 		this.correct = answeredCorrectly;
 	}
@@ -18,14 +18,6 @@ public class AnswerChallengeValidationMessage {
 
 	public void setAction(String action) {
 		this.action = action;
-	}
-
-	public int getChallengeId() {
-		return challengeId;
-	}
-
-	public void setChallengeId(int challengeId) {
-		this.challengeId = challengeId;
 	}
 
 	public int getPlayerId() {

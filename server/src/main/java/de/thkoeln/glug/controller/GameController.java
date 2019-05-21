@@ -17,14 +17,15 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
-import de.thkoeln.glug.communication.AllSlugsAllocatedMessage;
-import de.thkoeln.glug.communication.AllocateSlugRequest;
-import de.thkoeln.glug.communication.AnswerChallengeRequest;
-import de.thkoeln.glug.communication.AnswerChallengeValidationMessage;
-import de.thkoeln.glug.communication.CountdownMessage;
-import de.thkoeln.glug.communication.PlayerResponse;
-import de.thkoeln.glug.communication.RoundFinishedMessage;
-import de.thkoeln.glug.communication.SlugAllocatedMessage;
+import de.thkoeln.glug.communication.request.AllocateSlugRequest;
+import de.thkoeln.glug.communication.request.AnswerChallengeRequest;
+import de.thkoeln.glug.communication.response.AllSlugsAllocatedMessage;
+import de.thkoeln.glug.communication.response.AnswerChallengeValidationMessage;
+import de.thkoeln.glug.communication.response.CountdownMessage;
+import de.thkoeln.glug.communication.response.NewChallengeMessage;
+import de.thkoeln.glug.communication.response.PlayerResponse;
+import de.thkoeln.glug.communication.response.RoundFinishedMessage;
+import de.thkoeln.glug.communication.response.SlugAllocatedMessage;
 import de.thkoeln.glug.data.Game;
 import de.thkoeln.glug.data.Player;
 import de.thkoeln.glug.data.QuizChallenge;
@@ -37,7 +38,7 @@ import de.thkoeln.glug.data.repository.PlayerRepository;
 @Controller
 public class GameController {
 	final static Logger LOG = LoggerFactory.getLogger(GameController.class);
-	private final static long ROUND_DURATION_MS = 60000;
+	private final static long ROUND_DURATION_MS = 120000;
 	@Autowired
     private SimpMessagingTemplate template;
 	@Autowired
@@ -87,7 +88,7 @@ public class GameController {
 		long millis = dur.toMillis();
 		if (millis > ROUND_DURATION_MS) {
 			//round time limit exceeded: finish round
-			Set<RoundResult> results = gameService.calculateRoundResult(round);
+			Set<RoundResult> results = gameService.calculateRoundResult(round.getId());
 			template.convertAndSend("/topic/game/" + accessCode, new RoundFinishedMessage(results));
 			return;
 		}
@@ -108,15 +109,27 @@ public class GameController {
 
 	private void publishQuizChallenge(String accessCode, Round round) {
 		template.convertAndSend("/topic/game/" + accessCode, new CountdownMessage(3));
+		sleep(1000);
 		template.convertAndSend("/topic/game/" + accessCode, new CountdownMessage(2));
+		sleep(1000);
 		template.convertAndSend("/topic/game/" + accessCode, new CountdownMessage(1));
+		sleep(1000);
 		QuizChallenge generatedChallenge = gameService.generateChallenge(round);
-		template.convertAndSend("/topic/game/" + accessCode, generatedChallenge);
+		template.convertAndSend("/topic/game/" + accessCode, new NewChallengeMessage(generatedChallenge));
 	}
 
 
 
 
+
+	private void sleep(int i) {
+		try {
+			Thread.sleep(i);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	/*
 	@MessageMapping("/game/{game_id}")

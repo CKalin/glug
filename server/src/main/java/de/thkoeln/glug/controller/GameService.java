@@ -1,6 +1,7 @@
 package de.thkoeln.glug.controller;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -10,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.thkoeln.glug.communication.AllocateSlugRequest;
-import de.thkoeln.glug.communication.AnswerChallengeRequest;
+import de.thkoeln.glug.communication.request.AllocateSlugRequest;
+import de.thkoeln.glug.communication.request.AnswerChallengeRequest;
 import de.thkoeln.glug.data.ChallengeFactory;
 import de.thkoeln.glug.data.Game;
 import de.thkoeln.glug.data.Player;
@@ -75,8 +76,8 @@ public class GameService {
 	@Transactional(readOnly=false)
 	public QuizChallenge generateChallenge(Round round) {
 		QuizChallenge generatedChallenge = ChallengeFactory.generateRandomChallenge();
-		round.getQuizChallenges().add(generatedChallenge);
-		roundRepository.save(round);
+		generatedChallenge.setRound(round);
+		quizChallengeRepository.save(generatedChallenge);
 		return generatedChallenge;
 	}
 
@@ -85,7 +86,10 @@ public class GameService {
 		Player player = fetchPlayer(answerChallengeRequest.getPlayerId());
 		QuizChallenge challenge = fetchChallenge(answerChallengeRequest.getChallengeId());
 		QuizAnswer answer = fetchAnswer(answerChallengeRequest.getAnswerId());
-		if (!answer.getCorrect() || !challenge.getWinner().equals(null)) {
+		Player winner = challenge.getWinner();
+		boolean answerCorrect = answer.getCorrect();
+		boolean hasWinner = winner != null;
+		if (!answerCorrect || hasWinner) {
 			return false;
 		}
 		challenge.setWinner(player);
@@ -119,25 +123,26 @@ public class GameService {
 		return challenge.getRound();
 	}
 
-	public Set<RoundResult> calculateRoundResult(Round round) {
+	@Transactional(readOnly=false)
+	public Set<RoundResult> calculateRoundResult(int roundId) {
+		Round round = fetchRound(roundId);
 		Set<RoundResult> results = new HashSet<RoundResult>();
 		round.getGame().getPlayers().forEach(player -> {
 			RoundResult playerResult = new RoundResult();
 			playerResult.setPlayer(player);
 			playerResult.setRound(round);
 			playerResult.setSlugCountToSpend(calculateSlugsToSpend(round, player));
+			playerResult.setSlugCountRecieved(0);
+			playerResult.setRound(round);
 			results.add(playerResult);
+			roundResultRepository.save(playerResult);
 		});
-		round.setRoundResults(results);
-		roundRepository.save(round);
 		return results;
 	}
 
 	private Integer calculateSlugsToSpend(Round round, Player player) {
-		long slugsToSpend = round.getQuizChallenges().stream()
-				.map(quizChallenge -> quizChallenge.getWinner().getId().equals(player.getId()))
-				.collect(Collectors.counting());
-		return (int) slugsToSpend;
+		List<QuizChallenge> wonChallenges = quizChallengeRepository.findAllByRoundAndWinner(round, player);
+		return wonChallenges.size();
 	}
 
 	@Transactional(readOnly=false)
@@ -150,9 +155,10 @@ public class GameService {
 		return allocation;
 	}
 
+	@Transactional(readOnly=false)
 	public boolean allSlugsAllocated(int roundId) {
 		Round round = fetchRound(roundId);
-		return round.getQuizChallenges().size() == round.getSlugAllocations().size();
+		return round.getQuizChallenges().size() <= round.getSlugAllocations().size();
 	}
 
 	@Transactional(readOnly=false)
@@ -167,8 +173,8 @@ public class GameService {
 	}
 
 	private Integer calculateRecievedSlugs(Round round, Player player) {
-		long slugsRecieved = round.getSlugAllocations().stream().map(slugAllocation -> slugAllocation.getToPlayer().getId() == player.getId()).collect(Collectors.counting());
-		return (int) slugsRecieved;
+		List<SlugAllocation> recievedSlugs = slugAllocationRepository.findAllByRoundAndToPlayer(round, player);
+		return recievedSlugs.size();
 	}
 
 

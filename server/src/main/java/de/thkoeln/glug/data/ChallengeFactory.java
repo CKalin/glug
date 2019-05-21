@@ -26,10 +26,10 @@ public class ChallengeFactory {
 		generatedChallenge.setColorObject(generateColor(usedColors));
 		generatedChallenge.setColorObjectBorder(generateColor(usedColors));
 		generatedChallenge.setColorText(generateColor(usedColors));
-		generatedChallenge.setText(generateText(type));
 		generatedChallenge.setShape(randomEnum(Shapes.class).toString());
 		generatedChallenge.setQuestionType(type.toString());
 		generatedChallenge.setQuestion(generateQuestion(type));
+		generatedChallenge.setText(generateText(generatedChallenge));
 		Set<QuizAnswer> answers = new HashSet<QuizAnswer>();
 		answers.addAll(generateWrongAnswers(generatedChallenge));
 		answers.add(generateCorrectAnswer(generatedChallenge));
@@ -56,10 +56,13 @@ public class ChallengeFactory {
 		return selectedShape.toString();
 	}
 
-	private static String generateText(Types type) {
+	private static String generateText(QuizChallenge challenge) {
+		Types type = Types.valueOf(challenge.getQuestionType());
 		String text = null;
 		if (type.equals(Types.SHAPE_OBJECT)){
-			text = randomEnum(Shapes.class).toString();
+			List<Shapes> usedShapes = new ArrayList<Shapes>();
+			usedShapes.add(Shapes.valueOf(challenge.getShape()));
+			text = generateShape(usedShapes);
 		}
 		else{
 			text = randomEnum(Colors.class).toString();
@@ -148,7 +151,9 @@ public class ChallengeFactory {
 		case SHAPE_OBJECT:
 			List<Shapes> usedShapes = new ArrayList<Shapes>();
 			usedShapes.add(Shapes.valueOf(generatedChallenge.getShape()));
-			wrongAnswer1.setText(generatedChallenge.getText());
+			Shapes textShape = Shapes.valueOf(generatedChallenge.getText());
+			usedShapes.add(textShape);
+			wrongAnswer1.setText(textShape.toString());
 			wrongAnswer2.setText(generateShape(usedShapes));
 			wrongAnswer3.setText(generateShape(usedShapes));
 			break;

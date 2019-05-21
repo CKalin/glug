@@ -1,13 +1,18 @@
-package de.thkoeln.glug.communication;
+package de.thkoeln.glug.communication.response;
 
-import de.thkoeln.glug.data.QuizChallenge;
+import de.thkoeln.glug.data.SlugAllocation;
 
-public class AllocateSlugRequest {
-	String action = "ALLOCATE_SLUG";
+public class SlugAllocatedMessage {
+	private String action = "SLUG_ALLOCATED";
 	int roundId;
 	int fromPlayerId;
 	int toPlayerId;
 
+	public SlugAllocatedMessage(SlugAllocation allocation) {
+		this.roundId = allocation.getRound().getId();
+		this.fromPlayerId = allocation.getFromPlayer().getId();
+		this.toPlayerId = allocation.getToPlayer().getId();
+	}
 	public String getAction() {
 		return action;
 	}
@@ -32,11 +37,4 @@ public class AllocateSlugRequest {
 	public void setToPlayerId(int toPlayerId) {
 		this.toPlayerId = toPlayerId;
 	}
-	@Override
-	public String toString() {
-		return "AllocateSlugRequest [action=" + action + ", roundId=" + roundId + ", fromPlayerId=" + fromPlayerId
-				+ ", toPlayerId=" + toPlayerId + "]";
-	}
-
-
 }

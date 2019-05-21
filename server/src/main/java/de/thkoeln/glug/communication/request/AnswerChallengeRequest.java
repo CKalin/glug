@@ -1,4 +1,4 @@
-package de.thkoeln.glug.communication;
+package de.thkoeln.glug.communication.request;
 
 import de.thkoeln.glug.data.QuizChallenge;
 

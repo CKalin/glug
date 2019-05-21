@@ -1,4 +1,4 @@
-package de.thkoeln.glug.communication;
+package de.thkoeln.glug.communication.response;
 
 public class CountdownMessage {
 	String action = "COUNT_DOWN";

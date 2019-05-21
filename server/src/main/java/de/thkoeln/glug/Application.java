@@ -26,6 +26,7 @@ public class Application {
 
 	@PostConstruct
 	private void initDatabase() {
+		/*
 		Player helmutchecker = new Player("Player1");
 		helmutchecker.setName("Helmutchecker");
 		playerRepository.save(helmutchecker);
@@ -42,7 +43,7 @@ public class Application {
 			logger.info("Found player with name " + player.getName() + " with id " + player.getId());
 		});
 		QuizChallenge testChallenge = ChallengeFactory.generateRandomChallenge();
-		QuizChallenge testChallenge2 = ChallengeFactory.generateRandomChallenge();
+		QuizChallenge testChallenge2 = ChallengeFactory.generateRandomChallenge();*/
 	}
 
 	public Iterable<Player> getAllPlayers() {

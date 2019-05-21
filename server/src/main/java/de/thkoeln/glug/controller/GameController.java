@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 
 import de.thkoeln.glug.communication.request.AllocateSlugRequest;
 import de.thkoeln.glug.communication.request.AnswerChallengeRequest;
+import de.thkoeln.glug.communication.request.JoinGameRequest;
 import de.thkoeln.glug.communication.response.AllSlugsAllocatedMessage;
 import de.thkoeln.glug.communication.response.AnswerChallengeValidationMessage;
 import de.thkoeln.glug.communication.response.CountdownMessage;
@@ -38,7 +39,7 @@ import de.thkoeln.glug.data.repository.PlayerRepository;
 @Controller
 public class GameController {
 	final static Logger LOG = LoggerFactory.getLogger(GameController.class);
-	private final static long ROUND_DURATION_MS = 120000;
+	private final static long ROUND_DURATION_MS = 60000;
 	@Autowired
     private SimpMessagingTemplate template;
 	@Autowired
@@ -51,9 +52,9 @@ public class GameController {
 
 	@MessageMapping("/game/{accessCode}/player")
     @SendTo("/topic/game/{accessCode}/players")
-    public Set<PlayerResponse> joinGame(@DestinationVariable String accessCode, @Payload int playerId) {
-		LOG.info("new player {} for game {}", playerId, accessCode);
-		Set<Player> players = gameService.addPlayer(accessCode, playerId);
+    public Set<PlayerResponse> joinGame(@DestinationVariable String accessCode, @Payload JoinGameRequest joinGameRequest) {
+		LOG.info("new player {} for game {}", joinGameRequest.getPlayerId(), accessCode);
+		Set<Player> players = gameService.addPlayer(accessCode, joinGameRequest.getPlayerId());
 		Player gamemaster = gameService.getGamemaster(accessCode);
 		Set<PlayerResponse> playersResponse = new HashSet<PlayerResponse>();
 		players.forEach(player -> {

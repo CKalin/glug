@@ -1,3 +1,4 @@
+
 package de.thkoeln.glug.data.repository;
 
 import java.util.List;
@@ -11,4 +12,4 @@ import de.thkoeln.glug.data.SlugAllocation;
 
 public interface SlugAllocationRepository extends CrudRepository<SlugAllocation, Integer> {
 	List<SlugAllocation> findAllByRoundAndToPlayer(Round roundId, Player playerId);
-}
+	}

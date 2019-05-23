@@ -5,6 +5,8 @@ import de.thkoeln.glug.data.repository.GameRepository;
 import de.thkoeln.glug.data.repository.PlayerRepository;
 import de.thkoeln.glug.data.repository.RoundRepository;
 import de.thkoeln.glug.data.repository.SlugAllocationRepository;
+import java.util.*;
+
 
 public class Statistic {
 	private String statisticOne;
@@ -13,8 +15,10 @@ public class Statistic {
 	private String statisticFour;
 	private String statisticFive;
 	private String statisticSix;
+	private Iterable<Round> iterable_round;
 	private Round round;
-	String player;
+	private Player player;
+	private SlugAllocation slugallocation;
 
 	PlayerRepository playerRepository;
 	GameRepository gameRepository;
@@ -27,9 +31,13 @@ public class Statistic {
 	public Iterable<Player> getPlayersWithName(String name) {
 		return playerRepository.findByName(name);
 	}
-
-	public Statistic(String player, Game game){
-		this.setPlayer(player);
+	
+	public Iterable<Round> getPlayersWithGame(Game game) {
+		return roundrepository.findByGame(game);
+	}
+	
+	
+	public Statistic(Player player, Game game){
 		this.setStatisticOne(game);
 		this.setStatisticTwo(game);
 		this.setStatisticThree(game);
@@ -92,7 +100,7 @@ public class Statistic {
 		statFourText.append("Schlücke getrunken.");
 		this.statisticFour = statFourText.toString();
 		}
-	public void setStatisticFive(Game game, String player) {
+	public void setStatisticFive(Game game, Player player2) {
 		StringBuilder statFiveText = new StringBuilder();
 		statFiveText.append("Marius ");// Select
 		statFiveText.append("hat dir die meisten Schlücke ");
@@ -100,29 +108,41 @@ public class Statistic {
 		statFiveText.append("gegeben.");
 		this.statisticFive = statFiveText.toString();
 		}
-	public void setStatisticSix(Game game, String player) {
+	
+	
+	public void setStatisticSix(Game game, Player player) {
 		StringBuilder statSixText = new StringBuilder();
-		//roundrepository.findByGame(game);
-
-
-
+		
+		long numer_of_players = this.playerRepository.count();
+		Integer slug_from_a_player = null;
+		
+		iterable_round = roundrepository.findByGame(game); // Alle Runden
+		for (Round stat_round : iterable_round) { 
+		Iterator<Round> Iter_round = iterable_round.iterator();
+		while (Iter_round.hasNext()) {
+			Round round = (Round) Iter_round.next();
+				Set<SlugAllocation> Slugallocation = round.getSlugAllocations();// Alle Schlücke der Runde
+				Iterator SlugIterator = Slugallocation.iterator();
+				while(SlugIterator.hasNext()) {
+					Object slugallocation_o = SlugIterator.next();
+					slugallocation = (SlugAllocation) slugallocation_o;
+					Player FromPlayer = slugallocation.getFromPlayer(); // Schlücke für den Spieler hochzählen
+						if (FromPlayer == player) {
+							slug_from_a_player ++;	
+						}
+			/*
+			List<SlugAllocation> Slugs =  slugAllocationRepository.findAllByRoundAndToPlayer(round, player);
+			Iterator iterator = Slugs.iterator();
+			while(iterator.hasNext() ){
+			Object Slug = 	iterator.next();
+			*/
+			}
+		}
+		}
+		
 		statSixText.append("Du hast ");
-		statSixText.append("Peter ");//Select
-		statSixText.append("am meisten Schlücke ");
-		statSixText.append("(15) "); // Select
+		statSixText.append(slug_from_a_player);
 		statSixText.append("gegeben.");
 		this.statisticSix = statSixText.toString();
-	}
-	public void setRound(Round round) {
-		this.round = round;
-	}
-	public Round getRound() {
-		return round;
-	}
-	public String getPlayer() {
-		return player;
-	}
-	public void setPlayer(String player) {
-		this.player = player;
 	}
 }

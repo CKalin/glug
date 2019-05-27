@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 import de.thkoeln.glug.data.Player;
-import de.thkoeln.glug.data.QuizChallenge;
 import de.thkoeln.glug.data.Round;
 import de.thkoeln.glug.data.SlugAllocation;
 

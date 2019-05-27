@@ -2,12 +2,12 @@ package de.thkoeln.glug.communication.response;
 
 import de.thkoeln.glug.data.Game;
 
-public class GameCreatedResponse {
+public class CreateGameResponse {
 	String action = "GAME_CREATED";
 	int gameId;
 	String accessCode;
 
-	public GameCreatedResponse(Game game) {
+	public CreateGameResponse(Game game) {
 		this.gameId = game.getId();
 		this.accessCode = game.getAccessCode();
 	}

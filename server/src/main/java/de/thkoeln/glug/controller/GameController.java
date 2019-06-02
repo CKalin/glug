@@ -43,7 +43,7 @@ import de.thkoeln.glug.data.service.RoundService;
 @Controller
 public class GameController {
 	final static Logger LOG = LoggerFactory.getLogger(GameController.class);
-	private final static long ROUND_DURATION_MS = 0; //60000;
+	private final static long ROUND_DURATION_MS = 30000;
 	@Autowired
     private SimpMessagingTemplate template;
 	@Autowired

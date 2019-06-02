@@ -1,20 +1,135 @@
-import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
-import {RxStomp} from '@stomp/rx-stomp';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {filter, map, tap} from 'rxjs/operators';
-import * as SockJS from 'sockjs-client';
-import {Challenge} from './challenge';
-import {Message} from './message';
-import {Player} from './player';
+import {BehaviorSubject, Observable, Subject, zip} from 'rxjs';
+import {filter, first, map, tap} from 'rxjs/operators';
+import {ChallengeAnswerAction, CountdownAction, NewChallengeAction, RoundFinishedAction} from '../model/actions';
+import {Answer, Challenge} from '../model/challenge';
+import {Message} from '../model/message';
+import {Player} from '../model/player';
+import {translations} from '../model/translations';
+import {GameRepository} from '../repository/game.repository';
+import {PlayerService} from './player.service';
 
 @Injectable()
 export class GameService {
-  private players: Subject<Array<Player>> = new BehaviorSubject([]);
 
-  private _player: Player;
-  private player: Subject<Player> = new BehaviorSubject(null);
+  private challengeUpdates: Subject<Challenge | Message> = new BehaviorSubject(null);
+  private answers: Subject<ChallengeAnswerAction> = new BehaviorSubject(null);
+  private timeLeft: Subject<number> = new BehaviorSubject(null);
+  private roundId: number;
+
+  constructor(private router: Router, private game: GameRepository, private player: PlayerService) {
+  }
+
+  private code: Subject<string> = new BehaviorSubject('');
+
+  createGame(playerId: number) {
+    const result = this.game.createGame(playerId)
+        .pipe(tap(id => this.connectByCode(id, playerId)));
+    this.router.navigateByUrl('lobby/create');
+    return result;
+  }
+
+  connectByCode(code: string, playerId: number) {
+    this.code.next(code);
+    this.connectToGame(code, playerId);
+  }
+
+  validateAccessCode(code: string): Observable<boolean> {
+    return this.game.validateAccessCode(code);
+  }
+
+  private connectToGame(code: string, playerId: number) {
+    this.game.connect(code, playerId).subscribe(action => {
+      switch (action.action) {
+        case 'COUNT_DOWN':
+          this.router.navigateByUrl('/challenge');
+          this.challengeUpdates.next({
+            text: (action as CountdownAction).count,
+            subtext: 'Gleich gehts los!'
+          });
+          break;
+        case 'NEW_CHALLENGE':
+          const q = action as NewChallengeAction;
+          this.challengeUpdates.next({
+            id: q.challengeId,
+            color: q.colorObject,
+            border: q.colorObjectBorder,
+            backgroundColor: q.colorBackground,
+            object: q.shape,
+            text: translations[q.text],
+            textColor: q.colorText,
+            question: q.question,
+            answers: q.answers.map(a => ({text: translations[a.text], id: a.id}))
+          });
+          break;
+        case 'CHALLENGE_ANSWERED':
+          this.answers.next(action as ChallengeAnswerAction);
+          break;
+        case 'ALL_SLUGS_ALLOCATED':
+          this.router.navigateByUrl('/acknowledge');
+          this.player.registerResults(action as RoundFinishedAction);
+          break;
+        case 'ROUND_FINISHED':
+          this.router.navigateByUrl('/exchange');
+          const finished = action as RoundFinishedAction;
+          this.roundId = finished.roundId;
+          this.player.registerResults(finished);
+          break;
+        default:
+          console.log(action);
+      }
+    });
+    this.player.connect(code);
+  }
+
+  getAnswers() {
+    return this.answers.asObservable();
+  }
+
+  getCode(): Observable<string> {
+    return this.code.asObservable()
+        .pipe(filter(code => code !== ''));
+  }
+
+  joinGame(gameId: string, playerId: number) {
+    this.connectByCode(gameId, playerId);
+    this.router.navigateByUrl('lobby/join');
+  }
+
+  startNewRound() {
+    this.code.asObservable()
+        .pipe(first())
+        .pipe(map(c => this.game.startNewRound(c)))
+        .subscribe();
+  }
+
+  // *************************** MOCKS **********************************
+
+  getChallengeUpdates(): Observable<Challenge | Message> {
+    return this.challengeUpdates.asObservable();
+  }
+
+  answer(challenge: Challenge, answer: Answer) {
+    this.getCodeAndPlayer()
+        .subscribe(([c, p]) => this.game.sendAnswer(c, challenge.id, answer.id, p));
+  }
+
+  addGlug(player: Player) {
+    this.getCodeAndPlayer()
+        .subscribe(([c, p]) => this.game.addGlug(c, this.roundId, p, player.id));
+  }
+
+  acknowledgeGlugs() {
+  }
+
+  getTimeLeft(): Observable<number> {
+    return this.timeLeft.asObservable();
+  }
+
+  getGlugStatistics(): Observable<Array<Array<any>>> {
+    return this.statistics.asObservable();
+  }
 
   private statistics = new BehaviorSubject(
       [
@@ -29,137 +144,13 @@ export class GameService {
       ]
   );
 
-  private code: Subject<string> = new BehaviorSubject('');
-  private openGlugs: Subject<number> = new BehaviorSubject(
-      12 // Test Data
-  );
-  private challengeUpdates: Subject<Challenge | Message> = new BehaviorSubject(
-      {
-        color: 'blue',
-        border: 'red',
-        object: 'hexagon',
-        text: 'gelb',
-        textColor: 'yellow',
-        question: 'Das Quadrat ist blau.'
-      } as Challenge // Test Data
-      // {
-      //   text: '3',
-      //   subtext: 'Du hast du letzte Challenge gewonnen.'
-      // } as Message
-  );
-  private timeLeft: Subject<number> = new BehaviorSubject(
-      5 // Test Data
-  );
-  private serverUrl = '/glug/';
-  private stompClient: RxStomp;
-
-  constructor(private router: Router, private http: HttpClient) {
-    this.initializeWebSocketConnection();
-  }
-
-  private initializeWebSocketConnection() {
-    this.stompClient = new RxStomp();
-    this.stompClient.configure({webSocketFactory: () => new SockJS(this.serverUrl)});
-    this.stompClient.activate();
-  }
-
-  sendMessage() {
-    this.stompClient.publish({destination: '/app/game', body: 'Hallo'});
-  }
-
-  createGame(playerName: string) {
-    this.register(playerName).subscribe(player => {
-      const p = new HttpParams().append('playerId', player.id);
-      this.http.get<string>('/api/game/create', {params: p})
-          .subscribe(id => {
-            this.setCode(id);
-          });
-    });
-    this.router.navigateByUrl('lobby/create');
-  }
-
-  setCode(code: string) {
-    this.code.next(code);
-    this.connectToGame(code);
-  }
-
-  validateAccessCode(code: string): Observable<boolean> {
-    const p = new HttpParams().append('accessCode', code);
-    return this.http.get<boolean>('/api/game/isPresent', {params: p});
-  }
-
-  register(playerName: string): Observable<Player> {
-    const p = new HttpParams().append('name', playerName);
-    return this.http.get<Player>('/api/player/create', {params: p}).pipe(map(player => {
-      this._player = player;
-      this.player.next(player);
-      return player;
-    }));
-  }
-
-  private connectToGame(code: string) {
-    this.stompClient.watch('/topic/game/' + code + '/players')
-        .subscribe(r => this.players.next(this.processPlayers(JSON.parse(r.body) as Array<Player>)));
-    this.stompClient.publish({destination: '/app/game/' + code + '/player', body: this._player.id});
-  }
-
-  private processPlayers(players: Array<Player>) {
-    return players.map(p => {
-      if (p.id === this._player.id) {
-        return Object.assign({}, p, {you: true});
-      }
-      return p;
-    });
-  }
-
-  getParticipants(): Observable<Array<Player>> {
-    return this.players.asObservable();
-  }
-
-  getYourself(): Observable<Player> {
-    return this.players.asObservable()
-        .pipe(map(list => list.filter(p => p.you)[0]))
-        .pipe(tap(p => this._player = p));
-  }
-
-  getCode(): Observable<string> {
-    return this.code.asObservable()
-        .pipe(filter(code => code !== ''));
-  }
-
-  getChallengeUpdates(): Observable<Challenge | Message> {
-    return this.challengeUpdates.asObservable();
-  }
-
-  joinGame(name: string, gameId: any) {
-    this.register(name).subscribe(
-        () => this.setCode(gameId)
-    );
-    this.router.navigateByUrl('lobby/join');
-  }
-
-  addGlug(player: Player) {
-  }
-
-  acknowledgeGlugs() {
-  }
-
-  getOpenGlugs(): Observable<number> {
-    return this.openGlugs.asObservable();
-  }
-
-  getTimeLeft(): Observable<number> {
-    return this.timeLeft.asObservable();
-  }
-
-  startNewRound() {
-  }
-
-  getGlugStatistics(): Observable<Array<Array<any>>> {
-    return this.statistics.asObservable();
-  }
-
-  answer(challenge: Challenge, correct: boolean) {
+  private getCodeAndPlayer() {
+    const code = this.code.asObservable()
+        .pipe(first());
+    const playerId = this.player.getYourSelf()
+        .pipe(map(p => (p as Player).id))
+        .pipe(first());
+    return zip(code, playerId);
   }
 }
 

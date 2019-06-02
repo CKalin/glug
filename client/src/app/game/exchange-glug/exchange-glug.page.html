@@ -15,7 +15,7 @@
       <span *ngIf="timeLeft">noch <span class="glug">{{timeLeft}}</span> Sekunden</span>
     </ion-list-header>
    <ion-item *ngFor="let player of players">
-     <span slot="start" class="glug-count"><span class="number">{{player.glugs}}</span><img slot="end" src="assets/icon/favicon.png" /></span>
+     <span slot="start" class="glug-count"><span class="number">{{player.slugCountReceived}}</span><img slot="end" src="assets/icon/favicon.png" /></span>
      <ion-label>{{player.name}}</ion-label>
      <ion-note slot="end" *ngIf="player.you">Du</ion-note>
      <ion-button slot="end" fill="outline" [disabled]="openGlugs <= 0" (click)="addGlug(player)">

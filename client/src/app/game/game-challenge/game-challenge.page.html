@@ -7,48 +7,43 @@
 </ion-header>
 
 <ion-content>
-  <div class="ion-padding">
-    <div class="message" *ngIf="message">
-      <div class="text">{{message.text}}</div>
-      <ion-text color="primary">
-        <div class="subtext">{{message.subtext}}</div>
-      </ion-text>
+  <div class="ion-padding message" *ngIf="message">
+    <div class="text">{{message.text}}</div>
+    <ion-text color="primary">
+      <div class="subtext">{{message.subtext}}</div>
+    </ion-text>
+  </div>
+  <div class="challenge" *ngIf="challenge">
+    <div class="svg" [ngClass]="['background-'+challenge.backgroundColor]">
+      <svg width="100%" height="50%" viewBox="-5 -5 310 310"
+           [ngClass]="['fill-'+challenge.color,'stroke-'+challenge.border]">
+        <g *ngIf="challenge.object=='circle'">
+          <circle class="object" cx="150" cy="150" r="140"></circle>
+          <text class="text" [ngClass]="['fill-'+challenge.textColor,'stroke-'+challenge.textColor]" x="150" y="165" text-anchor="middle" alignment-baseline="central">{{challenge.text}}</text>
+        </g>
+        <g *ngIf="challenge.object=='triangle'">
+          <polygon class="object" points="0,270 300,270 150,20"> </polygon>
+          <text class="text" [ngClass]="['fill-'+challenge.textColor,'stroke-'+challenge.textColor]" x="150" y="200" text-anchor="middle" alignment-baseline="central">{{challenge.text}}</text>
+        </g>
+        <g *ngIf="challenge.object=='square'">
+          <rect class="object" x="20" y="20" width="260" height="260"></rect>
+          <text class="text" [ngClass]="['fill-'+challenge.textColor,'stroke-'+challenge.textColor]" x="150" y="165" text-anchor="middle" alignment-baseline="central">{{challenge.text}}</text>
+        </g>
+        <g *ngIf="challenge.object=='pentagon'">
+          <polygon class="object" points="150,3 292,107 237,278 57,278 3,107"></polygon>
+          <text class="text" [ngClass]="['fill-'+challenge.textColor,'stroke-'+challenge.textColor]" x="150" y="170" text-anchor="middle" alignment-baseline="central">{{challenge.text}}</text>
+        </g>
+        <g *ngIf="challenge.object=='hexagon'">
+          <polygon class="object" points="300,150 225,280 75,280 0,150 75,20 225,20"></polygon>
+          <text class="text" [ngClass]="['fill-'+challenge.textColor,'stroke-'+challenge.textColor]" x="150" y="165" text-anchor="middle" alignment-baseline="central">{{challenge.text}}</text>
+        </g>
+      </svg>
     </div>
-    <div class="challenge" *ngIf="challenge">
-      <div class="svg">
-        <svg width="100%" height="50%" viewBox="-5 -5 310 310"
-             [ngClass]="['fill-'+challenge.color,'stroke-'+challenge.border]">
-          <g *ngIf="challenge.object=='circle'">
-            <circle class="object" cx="150" cy="150" r="140"></circle>
-            <text class="text" [ngClass]="['fill-'+challenge.textColor,'stroke-'+challenge.textColor]" x="150" y="165" text-anchor="middle" alignment-baseline="central">{{challenge.text}}</text>
-          </g>
-          <g *ngIf="challenge.object=='triangle'">
-            <polygon class="object" points="0,270 300,270 150,20"> </polygon>
-            <text class="text" [ngClass]="['fill-'+challenge.textColor,'stroke-'+challenge.textColor]" x="150" y="200" text-anchor="middle" alignment-baseline="central">{{challenge.text}}</text>
-          </g>
-          <g *ngIf="challenge.object=='square'">
-            <rect class="object" x="20" y="20" width="260" height="260"></rect>
-            <text class="text" [ngClass]="['fill-'+challenge.textColor,'stroke-'+challenge.textColor]" x="150" y="165" text-anchor="middle" alignment-baseline="central">{{challenge.text}}</text>
-          </g>
-          <g *ngIf="challenge.object=='pentagon'">
-            <polygon class="object" points="150,3 292,107 237,278 57,278 3,107"></polygon>
-            <text class="text" [ngClass]="['fill-'+challenge.textColor,'stroke-'+challenge.textColor]" x="150" y="170" text-anchor="middle" alignment-baseline="central">{{challenge.text}}</text>
-          </g>
-          <g *ngIf="challenge.object=='hexagon'">
-            <polygon class="object" points="300,150 225,280 75,280 0,150 75,20 225,20"></polygon>
-            <text class="text" [ngClass]="['fill-'+challenge.textColor,'stroke-'+challenge.textColor]" x="150" y="165" text-anchor="middle" alignment-baseline="central">{{challenge.text}}</text>
-          </g>
-        </svg>
-      </div>
+    <div class="ion-padding">
       <p class="question">{{challenge.question}}</p>
       <div class="answers">
-        <ion-button color="light" (click)="answer(false)">
-          <ion-icon slot="start" name="close"></ion-icon>
-          Falsch
-        </ion-button>
-        <ion-button color="light" (click)="answer(true)">
-          <ion-icon slot="start" name="checkmark"></ion-icon>
-          Richtig
+        <ion-button [color]="getColor(answer)" (click)="sendAnswer(answer)" *ngFor="let answer of challenge.answers">
+          {{answer.text}}
         </ion-button>
       </div>
     </div>

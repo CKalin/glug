@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ChallengeFactory {
-	public static enum Colors{RED, YELLOW, GREEN, BLACK, BLUE, MAGENTA}
-	public static enum Shapes{Dreieck, Quadrat, Kreis, Sechseck, Parallelogramm, Trapez, Fünfeck}
+	public static enum Colors{blue, yellow, green, brown, grey, red, orange, purple}
+	public static enum Shapes{circle, triangle, square, pentagon, hexagon}
 	public static enum Types{COLOR_BACKGROUND, COLOR_OBJECT, COLOR_OBJECT_BORDER, TEXT, SHAPE_OBJECT}
 
 

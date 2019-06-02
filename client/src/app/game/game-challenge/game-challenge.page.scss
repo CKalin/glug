@@ -17,15 +17,16 @@ $colors: (
   }
 }
 
-;
-
 .challenge {
-  padding: 10px;
 }
 
 .answers {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+  ion-button {
+    width: 40%;
+  }
 }
 
 .svg {
@@ -33,6 +34,20 @@ $colors: (
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px;
+  position: relative;
+
+  &::after {
+    left: 0;
+    bottom: -8px;
+    background-position: left 0 top 0;
+    position: absolute;
+    width: 100%;
+    height: 8px;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAIBAMAAAACWGKkAAAAFVBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAASAQCkAAAAB3RSTlMFTEIzJBcOYhQUIwAAAB9JREFUCNdjEIQCBiUoYDCGAgYXKGAIhQKGNChgwAAAorMLKSCkL40AAAAASUVORK5CYII=");
+    background-repeat: repeat-x;
+    content: "";
+  }
 }
 
 .text {
@@ -41,7 +56,8 @@ $colors: (
 
 .question {
   text-align: center;
-  font-size: 20pt;
+  font-size: 16pt;
+  margin: 10px 0 20px;
 }
 
 .object {
@@ -68,4 +84,8 @@ $colors: (
 
 .stroke {
   @include color-modifiers($attribute: stroke);
+}
+
+.background {
+  @include color-modifiers($attribute: background-color);
 }

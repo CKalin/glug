@@ -17,7 +17,7 @@ public class NewChallengeMessage {
 	private String shape;
 	private String questionType;
 	private String question;
-	private List<String> answers = new ArrayList<String>();
+	private List<Answer> answers = new ArrayList<>();
 
 	public NewChallengeMessage(QuizChallenge challenge) {
 		super();
@@ -32,7 +32,10 @@ public class NewChallengeMessage {
 		this.questionType = challenge.getQuestionType();
 		this.question = challenge.getQuestion();
 		challenge.getAnswers().forEach(answer -> {
-			answers.add(answer.getText());
+			Answer a = new Answer();
+			a.setText(answer.getText());
+			a.setId(answer.getId());
+			answers.add(a);
 		});
 	}
 
@@ -124,11 +127,11 @@ public class NewChallengeMessage {
 		this.question = question;
 	}
 
-	public List<String> getAnswers() {
+	public List<Answer> getAnswers() {
 		return answers;
 	}
 
-	public void setAnswers(List<String> answers) {
+	public void setAnswers(List<Answer> answers) {
 		this.answers = answers;
 	}
 

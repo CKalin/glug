@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {GameService} from '../service/game.service';
-import {Player} from '../service/player';
+import {Player} from '../model/player';
+import {PlayerService} from '../service/player.service';
 
 @Component({
   templateUrl: 'acknowledge-glug.page.html',
@@ -24,15 +25,19 @@ export class AcknowledgeGlugPage implements OnInit {
     }
   };
 
-  constructor(private service: GameService) {
+  constructor(private game: GameService, private player: PlayerService) {
   }
 
   ngOnInit(): void {
-    this.service.getParticipants().subscribe(p => this.players = p);
-    this.service.getYourself().subscribe(y => this.you = y);
+    this.player.getParticipants().subscribe(p => this.players = p);
+    this.player.getYourSelf().subscribe(y => {
+      if (y.slugCountReceived === 0) {
+        y.glugsAcknowledged = true;
+      }
+      this.you = y;
+    });
 
     function prepareData(s: Array<Array<any>>) {
-      console.log(s);
       return s.map(i => {
         const n = [];
         n.push(...i);
@@ -41,15 +46,15 @@ export class AcknowledgeGlugPage implements OnInit {
       });
     }
 
-    this.service.getGlugStatistics().subscribe(s => this.chart.data = prepareData(s));
+    this.game.getGlugStatistics().subscribe(s => this.chart.data = prepareData(s));
   }
 
   acknowledgeGlugs() {
-    this.service.acknowledgeGlugs();
+    this.game.acknowledgeGlugs();
   }
 
   startNewRound() {
-    this.service.startNewRound();
+    this.game.startNewRound();
   }
 
   allAcknowledged() {

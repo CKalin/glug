@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GameService} from '../service/game.service';
-import {Player} from '../service/player';
+import {Player} from '../model/player';
+import {PlayerService} from '../service/player.service';
 
 @Component({
   templateUrl: 'game-lobby.page.html',
@@ -12,15 +13,15 @@ export class GameLobbyPage implements OnInit {
   code = '';
   mode: 'create' | 'join' = 'create';
 
-  constructor(private service: GameService, private route: ActivatedRoute, private router: Router) {}
+  constructor(private player: PlayerService, private game: GameService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(p => this.mode = p.mode);
-    this.service.getParticipants().subscribe(p => this.participants = p);
-    this.service.getCode().subscribe(c => this.code = c);
+    this.player.getParticipants().subscribe(p => this.participants = p);
+    this.game.getCode().subscribe(c => this.code = c);
   }
 
   startGame() {
-    this.router.navigateByUrl('/challenge');
+    this.game.startNewRound();
   }
 }

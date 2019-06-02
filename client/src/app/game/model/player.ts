@@ -1,8 +1,9 @@
 export class Player {
   name: string;
-  id: string;
+  id: number;
   you = false;
   leader = false;
-  glugs = 0;
+  slugCountToAllocate = 0;
+  slugCountReceived = 0;
   glugsAcknowledged = false;
 }

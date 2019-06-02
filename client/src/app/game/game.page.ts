@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
 import {AlertController} from '@ionic/angular';
+import {flatMap} from 'rxjs/operators';
 import {GameService} from './service/game.service';
+import {PlayerService} from './service/player.service';
 
 @Component({
   templateUrl: 'game.page.html',
@@ -10,14 +11,19 @@ import {GameService} from './service/game.service';
 export class GamePage implements OnInit {
   public playerName = '';
 
-  constructor(private gameService: GameService, private router: Router, private alertController: AlertController) {
+  constructor(
+      private playerService: PlayerService,
+      private gameService: GameService,
+      private alertController: AlertController) {
   }
 
   ngOnInit(): void {
   }
 
   createGame() {
-    this.gameService.createGame(this.playerName);
+    this.playerService.register(this.playerName)
+        .pipe(flatMap(p => this.gameService.createGame(p.id)))
+        .subscribe();
   }
 
   joinGame() {
@@ -46,7 +52,8 @@ export class GamePage implements OnInit {
           handler: (form) => {
             this.gameService.validateAccessCode(form.gameId).subscribe(valid => {
               if (valid) {
-                this.gameService.joinGame(this.playerName, form.gameId);
+                this.playerService.register(this.playerName)
+                    .subscribe(p => this.gameService.joinGame(form.gameId as string, p.id));
               } else {
                 this.presetInvalidCodePopup();
               }

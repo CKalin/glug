@@ -43,7 +43,7 @@ import de.thkoeln.glug.data.service.RoundService;
 @Controller
 public class GameController {
 	final static Logger LOG = LoggerFactory.getLogger(GameController.class);
-	private final static long ROUND_DURATION_MS = 60000;
+	private final static long ROUND_DURATION_MS = 0; //60000;
 	@Autowired
     private SimpMessagingTemplate template;
 	@Autowired
@@ -69,10 +69,11 @@ public class GameController {
 		Player gamemaster = gameService.getGamemaster(accessCode);
 		Set<PlayerBean> inGamePlayers = new HashSet<PlayerBean>();
 		players.forEach(player -> {
-			inGamePlayers.add(new PlayerBean(player.getId(), player.getName(), player.getId() == gamemaster.getId()));
+			inGamePlayers.add(new PlayerBean(player.getId(), player.getName(), player.getId().equals(gamemaster.getId())));
 		});
 		joinedPlayer = playerService.fetchPlayer(joinGameRequest.getPlayerId());
-		PlayerBean joinedPlayerBean = new PlayerBean(joinedPlayer.getId(), joinedPlayer.getName(), joinedPlayer.getId() == gamemaster.getId());
+		PlayerBean joinedPlayerBean = new PlayerBean(joinedPlayer.getId(), joinedPlayer.getName(),
+				joinedPlayer.getId().equals(gamemaster.getId()));
         return new PlayerJoinedMessage(joinedPlayerBean, inGamePlayers);
     }
 

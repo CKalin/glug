@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {GameService} from '../service/game.service';
-import {Player} from '../service/player';
+import {Player} from '../model/player';
+import {PlayerService} from '../service/player.service';
 
 @Component({
   templateUrl: 'exchange-glug.page.html',
@@ -9,18 +10,22 @@ import {Player} from '../service/player';
 export class ExchangeGlugPage implements OnInit {
   openGlugs = 0;
   players: Array<Player> = [];
-  timeLeft = 0;
+  timeLeft = null;
 
-  constructor(private service: GameService) {
+  constructor(private game: GameService, private player: PlayerService) {
   }
 
   ngOnInit(): void {
-    this.service.getOpenGlugs().subscribe(g => this.openGlugs = g);
-    this.service.getTimeLeft().subscribe(g => this.timeLeft = g);
-    this.service.getParticipants().subscribe(p => this.players = p);
+    this.game.getTimeLeft().subscribe(g => this.timeLeft = g);
+    this.player.getParticipants().subscribe(p => this.players = p);
+    this.player.getYourSelf().subscribe(p => this.openGlugs = p.slugCountToAllocate);
   }
 
   addGlug(player: Player) {
-    this.service.addGlug(player);
+    if (this.openGlugs > 0) {
+      this.openGlugs--;
+      player.slugCountReceived++;
+      this.game.addGlug(player);
+    }
   }
 }

@@ -8,8 +8,8 @@
 
 <ion-content>
   <div class="ion-padding" *ngIf="you.glugsAcknowledged">
-    <ion-list-header>Glug Verteilung</ion-list-header>
-    <ion-item lines="none">
+    <ion-list-header *ngIf="false">Glug Verteilung</ion-list-header>
+    <ion-item *ngIf="false" lines="none">
       <google-chart [title]="'Glug Statistik'"
                     type="Sankey"
                     [data]="chart.data"
@@ -24,7 +24,7 @@
       </ion-list-header>
       <ion-item *ngFor="let player of players">
         <span slot="start" class="glug-count">
-          <span class="number">{{player.glugs}}</span>
+          <span class="number">{{player.slugCountReceived}}</span>
           <img slot="end" src="assets/icon/favicon.png"/>
         </span>
         <ion-label>{{player.name}}</ion-label>
@@ -46,7 +46,11 @@
   <div class="ion-padding" *ngIf="!you.glugsAcknowledged">
     <div class="logo">
       <img src="assets/icon/favicon.png" style="width: 64px; height: 64px;"/>
-      <p>Herzlichen Glückwunsch, du hast <span class="glug">{{you.glugs}} Glugs</span> erhalten.</p>
+      <p>Herzlichen Glückwunsch, du hast
+        <span *ngIf="you.slugCountReceived > 1" class="glug">{{you.slugCountReceived}} Glugs</span>
+        <span *ngIf="you.slugCountReceived == 1" class="glug">einen Glug</span>
+        <span *ngIf="you.slugCountReceived == 0" class="glug">keinen Glug</span>
+        erhalten.</p>
     </div>
     <ion-button (click)="acknowledgeGlugs()" expand="block" color="primary">
       <ion-icon slot="start" name="checkmark"></ion-icon>

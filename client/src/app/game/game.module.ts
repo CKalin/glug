@@ -11,7 +11,11 @@ import {GameChallengePage} from './game-challenge/game-challenge.page';
 import {GameLobbyPage} from './game-lobby/game-lobby.page';
 
 import {GamePage} from './game.page';
+import {GameRepository} from './repository/game.repository';
+import {PlayerRepository} from './repository/player.repository';
+import {StompClientRepository} from './repository/stomp.client.repository';
 import {GameService} from './service/game.service';
+import {PlayerService} from './service/player.service';
 import {StatisticsPage} from './statistic/statistics-page.component';
 
 @NgModule({
@@ -48,7 +52,7 @@ import {StatisticsPage} from './statistic/statistics-page.component';
       }
     ])
   ],
-  providers: [GameService],
+  providers: [GameService, PlayerService, GameRepository, PlayerRepository, StompClientRepository],
   declarations: [GamePage, GameLobbyPage, GameChallengePage, ExchangeGlugPage, AcknowledgeGlugPage, StatisticsPage]
 })
 export class GameModule {

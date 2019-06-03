@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.thkoeln.glug.communication.response.CreatePlayerResponse;
-import de.thkoeln.glug.data.Game;
 import de.thkoeln.glug.data.Player;
-import de.thkoeln.glug.data.repository.GameRepository;
 import de.thkoeln.glug.data.repository.PlayerRepository;
 
 @RestController()
@@ -17,8 +15,6 @@ import de.thkoeln.glug.data.repository.PlayerRepository;
 public class PlayerRestController {
 	@Autowired
 	PlayerRepository playerRepository;
-	@Autowired
-	GameRepository gameRepository;
 
 	@GetMapping("/create")
     public CreatePlayerResponse createGame(@RequestParam(value="name") String name) {

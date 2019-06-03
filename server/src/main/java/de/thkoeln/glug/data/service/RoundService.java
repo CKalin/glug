@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.thkoeln.glug.communication.response.SlugsAllocatedStatistic;
 import de.thkoeln.glug.data.Game;
 import de.thkoeln.glug.data.Player;
 import de.thkoeln.glug.data.Round;
@@ -88,5 +89,11 @@ public class RoundService {
 	public boolean allSlugsAllocated(int roundId) {
 		Round round = fetchRound(roundId);
 		return round.getQuizChallenges().size() <= round.getSlugAllocations().size();
+	}
+
+	@Transactional(readOnly=false)
+	public List<SlugsAllocatedStatistic> fetchSlugsAllocatedStatistics(int roundId) {
+		Round round = fetchRound(roundId);
+		return slugAllocationRepository.findAllByRoundGroupByFromPlayerAndToPlayer(round);
 	}
 }

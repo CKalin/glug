@@ -3,6 +3,7 @@ package de.thkoeln.glug.controller;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import de.thkoeln.glug.communication.request.AllocateSlugRequest;
 import de.thkoeln.glug.communication.request.AnswerChallengeRequest;
 import de.thkoeln.glug.communication.request.JoinGameRequest;
 import de.thkoeln.glug.communication.response.AllSlugsAllocatedMessage;
+import de.thkoeln.glug.communication.response.AllSlugsAllocatedStatisticsMessage;
 import de.thkoeln.glug.communication.response.AnswerChallengeValidationMessage;
 import de.thkoeln.glug.communication.response.CountdownMessage;
 import de.thkoeln.glug.communication.response.NewChallengeMessage;
@@ -26,6 +28,7 @@ import de.thkoeln.glug.communication.response.PlayerBean;
 import de.thkoeln.glug.communication.response.PlayerJoinedMessage;
 import de.thkoeln.glug.communication.response.RoundFinishedMessage;
 import de.thkoeln.glug.communication.response.SlugAllocatedMessage;
+import de.thkoeln.glug.communication.response.SlugsAllocatedStatistic;
 import de.thkoeln.glug.data.Game;
 import de.thkoeln.glug.data.Player;
 import de.thkoeln.glug.data.QuizAnswer;
@@ -126,6 +129,10 @@ public class GameController {
 		if (roundService.allSlugsAllocated(allocateSlugRequest.getRoundId())) {
 			Set<RoundResult> results = roundService.calculateRoundResultAllocated(allocateSlugRequest.getRoundId());
 			template.convertAndSend("/topic/game/" + accessCode, new AllSlugsAllocatedMessage(results));
+			List<SlugsAllocatedStatistic> slugsAllocatedStatistic = roundService.fetchSlugsAllocatedStatistics(allocateSlugRequest.getRoundId());
+			AllSlugsAllocatedStatisticsMessage allSlugsAllocatedStatisticsMessage = new AllSlugsAllocatedStatisticsMessage(slugsAllocatedStatistic);
+			allSlugsAllocatedStatisticsMessage.setRoundId(allocateSlugRequest.getRoundId());
+			template.convertAndSend("/topic/game/" + accessCode, allSlugsAllocatedStatisticsMessage);
 		}
     }
 

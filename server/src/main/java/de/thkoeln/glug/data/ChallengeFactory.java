@@ -121,6 +121,7 @@ public class ChallengeFactory {
 			break;
 		}
 		correctAnswer.setText(text);
+		correctAnswer.setQuizChallenge(generatedChallenge);
 		return correctAnswer;
 	}
 
@@ -165,6 +166,9 @@ public class ChallengeFactory {
 		default:
 			break;
 		}
+		wrongAnswer1.setQuizChallenge(generatedChallenge);
+		wrongAnswer2.setQuizChallenge(generatedChallenge);
+		wrongAnswer3.setQuizChallenge(generatedChallenge);
 		List<QuizAnswer> wrongAnswers = new ArrayList<QuizAnswer>();
 		wrongAnswers.add(wrongAnswer1);
 		wrongAnswers.add(wrongAnswer2);

@@ -20,9 +20,14 @@ public class RoundResult {
 	private Round round;
 	private Integer slugCountReceived;
 	private Integer slugCountToSpend;
+	private Boolean slugsConfirmed;
 	@Column
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
+
+	public RoundResult() {
+
+	}
 
 	public Integer getId() {
 		return id;
@@ -59,6 +64,15 @@ public class RoundResult {
 	}
 	public void setCreateDateTime(LocalDateTime createDateTime) {
 		this.createDateTime = createDateTime;
+	}
+	public Boolean getSlugsConfirmed() {
+		return slugsConfirmed;
+	}
+	public void setSlugsConfirmed(Boolean slugsConfirmed) {
+		this.slugsConfirmed = slugsConfirmed;
+	}
+	public void setSlugCountReceived(Integer slugCountReceived) {
+		this.slugCountReceived = slugCountReceived;
 	}
 
 }

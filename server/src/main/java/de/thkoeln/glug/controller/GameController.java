@@ -18,9 +18,11 @@ import org.springframework.stereotype.Controller;
 
 import de.thkoeln.glug.communication.request.AllocateSlugRequest;
 import de.thkoeln.glug.communication.request.AnswerChallengeRequest;
+import de.thkoeln.glug.communication.request.ConfirmSlugsRequest;
 import de.thkoeln.glug.communication.request.JoinGameRequest;
 import de.thkoeln.glug.communication.response.AllSlugsAllocatedMessage;
 import de.thkoeln.glug.communication.response.AllSlugsAllocatedStatisticsMessage;
+import de.thkoeln.glug.communication.response.AllSlugsConfirmedMessage;
 import de.thkoeln.glug.communication.response.AnswerChallengeValidationMessage;
 import de.thkoeln.glug.communication.response.CountdownMessage;
 import de.thkoeln.glug.communication.response.NewChallengeMessage;
@@ -29,6 +31,7 @@ import de.thkoeln.glug.communication.response.PlayerJoinedMessage;
 import de.thkoeln.glug.communication.response.RoundFinishedMessage;
 import de.thkoeln.glug.communication.response.SlugAllocatedMessage;
 import de.thkoeln.glug.communication.response.SlugsAllocatedStatistic;
+import de.thkoeln.glug.communication.response.SlugsConfirmedMessage;
 import de.thkoeln.glug.data.Game;
 import de.thkoeln.glug.data.Player;
 import de.thkoeln.glug.data.QuizAnswer;
@@ -146,6 +149,19 @@ public class GameController {
 		QuizChallenge generatedChallenge = quizChallengeService.generateChallenge(round);
 		template.convertAndSend("/topic/game/" + accessCode, new NewChallengeMessage(generatedChallenge));
 	}
+
+	@MessageMapping("/game/{accessCode}/confirmSlugs")
+    public void allocateSlug(@DestinationVariable String accessCode, @Payload ConfirmSlugsRequest confirmSlugsRequest) {
+		LOG.info("confirmed slugs {}", confirmSlugsRequest);
+		//save confirmed slugs
+		Round round = roundService.fetchRound(confirmSlugsRequest.getRoundId());
+		Player player = playerService.fetchPlayer(confirmSlugsRequest.getPlayerId());
+		roundService.confirmSlug(player, round);
+		template.convertAndSend("/topic/game/" + accessCode, new SlugsConfirmedMessage(round.getId(), player.getId()));
+		if(roundService.allSlugsConfirmed(round)) {
+			template.convertAndSend("/topic/game/" + accessCode, new AllSlugsConfirmedMessage(round.getId()));
+		}
+    }
 
 
 

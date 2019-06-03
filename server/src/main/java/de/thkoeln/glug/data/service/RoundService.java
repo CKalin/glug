@@ -52,6 +52,7 @@ public class RoundService {
 			playerResult.setRound(round);
 			playerResult.setSlugCountToSpend(quizChallengeService.calculateSlugsToSpend(round, player));
 			playerResult.setSlugCountRecieved(0);
+			playerResult.setSlugsConfirmed(false);
 			playerResult.setRound(round);
 			results.add(playerResult);
 			roundResultRepository.save(playerResult);
@@ -95,5 +96,18 @@ public class RoundService {
 	public List<SlugsAllocatedStatistic> fetchSlugsAllocatedStatistics(int roundId) {
 		Round round = fetchRound(roundId);
 		return slugAllocationRepository.findAllByRoundGroupByFromPlayerAndToPlayer(round);
+	}
+
+	@Transactional(readOnly=false)
+	public void confirmSlug(Player player, Round round) {
+		RoundResult playerResult = roundResultRepository.findOneByRoundAndPlayer(round, player).orElseThrow(() -> new RuntimeException("RoundResult not existing"));
+		playerResult.setSlugsConfirmed(true);
+		roundResultRepository.save(playerResult);
+	}
+
+	@Transactional(readOnly=false)
+	public boolean allSlugsConfirmed(Round round) {
+		List<RoundResult> playerResults = roundResultRepository.findByRoundAndSlugsConfirmed(round, false);
+		return playerResults.size() == 0;
 	}
 }

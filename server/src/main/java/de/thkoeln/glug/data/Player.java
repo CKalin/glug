@@ -29,6 +29,8 @@ public class Player {
 	@JsonIgnore
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private Set<Game> games;
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	private Set<QuizAnswer> answers;
 	@JsonIgnore
 	@OneToMany(mappedBy = "player")
 	private Set<RoundResult> roundResults;
@@ -109,6 +111,19 @@ public class Player {
 	public void setCreateDateTime(LocalDateTime createDateTime) {
 		this.createDateTime = createDateTime;
 	}
-
-
+	public Set<QuizAnswer> getAnswers() {
+		return answers;
+	}
+	public void setAnswers(Set<QuizAnswer> answers) {
+		this.answers = answers;
+	}
+	public Set<QuizChallenge> getWonChallenges() {
+		return wonChallenges;
+	}
+	public void setWonChallenges(Set<QuizChallenge> wonChallenges) {
+		this.wonChallenges = wonChallenges;
+	}
+	public void setSlugsReceived(Set<SlugAllocation> slugsReceived) {
+		this.slugsReceived = slugsReceived;
+	}
 }

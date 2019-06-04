@@ -71,7 +71,7 @@ public class GameController {
     public PlayerJoinedMessage joinGame(@DestinationVariable String accessCode, @Payload JoinGameRequest joinGameRequest) {
 		LOG.info("new player {} for game {}", joinGameRequest.getPlayerId(), accessCode);
 		Player joinedPlayer = playerService.fetchPlayer(joinGameRequest.getPlayerId());
-		Set<Player> players = gameService.addPlayer(accessCode, joinedPlayer);
+		Set<Player> players = gameService.addPlayer(accessCode, joinedPlayer.getId());
 		Player gamemaster = gameService.getGamemaster(accessCode);
 		Set<PlayerBean> inGamePlayers = new HashSet<PlayerBean>();
 		players.forEach(player -> {
@@ -94,17 +94,25 @@ public class GameController {
 	@MessageMapping("/game/{accessCode}/answer")
     public void answerChallenge(@DestinationVariable String accessCode, @Payload AnswerChallengeRequest answerChallengeRequest) {
 		LOG.info("new answer in game {}: {}", accessCode, answerChallengeRequest);
+
 		//validate challenge answer
 		QuizChallenge challenge = quizChallengeService.fetchChallenge(answerChallengeRequest.getChallengeId());
 		Player player = playerService.fetchPlayer(answerChallengeRequest.getPlayerId());
+		if (quizChallengeService.hasAnsweredChallenge(challenge.getId(), player.getId())) {
+			LOG.debug("player {} already answered", player.getId());
+			return;
+		}
 		QuizAnswer answer = quizChallengeService.fetchAnswer(answerChallengeRequest.getAnswerId());
-		boolean answeredCorrectly = quizChallengeService.answerChallenge(challenge, player, answer);
+		boolean answeredCorrectly = quizChallengeService.answerChallenge(challenge.getId(), player.getId(), answer.getId());
 		//inform all about validated answers
 		template.convertAndSend("/topic/game/" + accessCode, new AnswerChallengeValidationMessage(answerChallengeRequest, answeredCorrectly));
 		if(!answeredCorrectly) {
 			//wait for next answer
-			//TODO Check if maybe all wrong
-			return;
+			if (quizChallengeService.allPlayersAnswered(challenge.getId())) {
+				LOG.debug("all players answered wrong");
+			} else {
+				return;
+			}
 		}
 		Round round = quizChallengeService.fetchRoundByChallengeId(answerChallengeRequest.getChallengeId());
 		LocalDateTime roundStarted = round.getCreateDateTime();

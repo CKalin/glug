@@ -1,6 +1,8 @@
 package de.thkoeln.glug.data.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class QuizChallengeService {
 	QuizChallengeRepository quizChallengeRepository;
 	@Autowired
 	QuizAnswerRepository quizAnswerRepository;
+	@Autowired
+	PlayerService playerService;
 
 	@Transactional(readOnly=false)
 	public QuizChallenge generateChallenge(Round round) {
@@ -30,7 +34,25 @@ public class QuizChallengeService {
 	}
 
 	@Transactional(readOnly=false)
-	public boolean answerChallenge(QuizChallenge challenge, Player player, QuizAnswer answer) {
+	public synchronized boolean hasAnsweredChallenge(int challengeId, int playerId) {
+		Player player = playerService.fetchPlayer(playerId);
+		QuizChallenge challenge = fetchChallenge(challengeId);
+		List<Player> playersAnswered = new ArrayList<Player>();
+		Set<QuizAnswer> challengeAnswers = challenge.getAnswers();
+		challengeAnswers.stream().forEach(challengeAnswer -> {
+			playersAnswered.addAll(challengeAnswer.getPlayers());
+		});
+		return playersAnswered.contains(player);
+	}
+
+	@Transactional(readOnly=false)
+	public synchronized boolean answerChallenge(int challengeId, int playerId, int answerId) {
+		QuizChallenge challenge = fetchChallenge(challengeId);
+		QuizAnswer answer = fetchAnswer(answerId);
+		Player player = playerService.fetchPlayer(playerId);
+		player.getAnswers().add(answer);
+		answer.getPlayers().add(player);
+		quizAnswerRepository.save(answer);
 		Player winner = challenge.getWinner();
 		boolean answerCorrect = answer.getCorrect();
 		boolean hasWinner = winner != null;
@@ -61,5 +83,18 @@ public class QuizChallengeService {
 	public Integer calculateSlugsToSpend(Round round, Player player) {
 		List<QuizChallenge> wonChallenges = quizChallengeRepository.findAllByRoundAndWinner(round, player);
 		return wonChallenges.size();
+	}
+
+	@Transactional(readOnly=false)
+	public boolean allPlayersAnswered(int challengeId) {
+		QuizChallenge challenge = fetchChallenge(challengeId);
+		int countInGame = challenge.getRound().getGame().getPlayers().size();
+		List<Player> playersAnswered = new ArrayList<Player>();
+		Set<QuizAnswer> challengeAnswers = challenge.getAnswers();
+		challengeAnswers.stream().forEach(challengeAnswer -> {
+			playersAnswered.addAll(challengeAnswer.getPlayers());
+		});
+		int countAnswered = playersAnswered.size();
+		return countAnswered >= countInGame;
 	}
 }

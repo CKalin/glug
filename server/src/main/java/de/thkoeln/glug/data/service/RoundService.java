@@ -3,14 +3,19 @@ package de.thkoeln.glug.data.service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.thkoeln.glug.communication.response.SlugsAllocatedStatistic;
+import de.thkoeln.glug.controller.GameController;
 import de.thkoeln.glug.data.Game;
 import de.thkoeln.glug.data.Player;
+import de.thkoeln.glug.data.QuizChallenge;
 import de.thkoeln.glug.data.Round;
 import de.thkoeln.glug.data.RoundResult;
 import de.thkoeln.glug.data.SlugAllocation;
@@ -20,6 +25,7 @@ import de.thkoeln.glug.data.repository.SlugAllocationRepository;
 
 @Service
 public class RoundService {
+	final static Logger LOG = LoggerFactory.getLogger(RoundService.class);
 	@Autowired
 	RoundRepository roundRepository;
 	@Autowired
@@ -89,7 +95,11 @@ public class RoundService {
 	@Transactional(readOnly=false)
 	public boolean allSlugsAllocated(int roundId) {
 		Round round = fetchRound(roundId);
-		return round.getQuizChallenges().size() <= round.getSlugAllocations().size();
+		Set<QuizChallenge> challenges = round.getQuizChallenges();
+		long correctlyAnsweredCount = challenges.stream().filter(challenge -> challenge.getWinner() != null).collect(Collectors.counting());
+		int slugsAllocatedCount = round.getSlugAllocations().size();
+		LOG.debug("correctly answered: {} | clugs allocated: {}", correctlyAnsweredCount, slugsAllocatedCount);
+		return correctlyAnsweredCount <= slugsAllocatedCount;
 	}
 
 	@Transactional(readOnly=false)

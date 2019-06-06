@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 public class ChallengeFactory {
 	public static enum Colors{blue, yellow, green, brown, grey, red, orange, purple}
 	public static enum Shapes{circle, triangle, square, pentagon, hexagon}
-	public static enum Types{COLOR_BACKGROUND, COLOR_OBJECT, COLOR_OBJECT_BORDER, TEXT, SHAPE_OBJECT}
+	public static enum Types{COLOR_BACKGROUND, COLOR_OBJECT, COLOR_OBJECT_BORDER, COLOR_TEXT, TEXT, SHAPE_OBJECT}
 
 
 
@@ -85,6 +85,10 @@ public class ChallengeFactory {
 			question = "Welche Farbe hat der Objektrand?";
 			break;
 
+		case COLOR_TEXT:
+			question = "Welche Farbe hat der Text?";
+			break;
+
 		case SHAPE_OBJECT:
 			question = "Welche Form hat das Objekt?";
 			break;
@@ -111,6 +115,9 @@ public class ChallengeFactory {
 		case COLOR_OBJECT_BORDER:
 			text = generatedChallenge.getColorObjectBorder();
 			break;
+		case COLOR_TEXT:
+			text = generatedChallenge.getColorText();
+			break;
 		case SHAPE_OBJECT:
 			text = generatedChallenge.getShape();
 			break;
@@ -133,34 +140,41 @@ public class ChallengeFactory {
 		wrongAnswer2.setCorrect(false);
 		QuizAnswer wrongAnswer3 = new QuizAnswer();
 		wrongAnswer3.setCorrect(false);
+		List<String> usedColors = new ArrayList<String>();
+		List<String> availableColors = new ArrayList<String>();
+		availableColors.add(generatedChallenge.getColorObjectBorder());
+		availableColors.add(generatedChallenge.getColorObject());
+		availableColors.add(generatedChallenge.getColorBackground());
+		availableColors.add(generatedChallenge.getText());
+		availableColors.add(generatedChallenge.getColorText());
 		switch (type) {
 		case COLOR_BACKGROUND:
-
-			wrongAnswer2.setText(generatedChallenge.getColorObjectBorder());
-			wrongAnswer3.setText(generatedChallenge.getColorObject());
-			if(wrongAnswer2.getText().equals(generatedChallenge.getText()) || wrongAnswer3.getText().equals(generatedChallenge.getText())) {
-				wrongAnswer1.setText(generatedChallenge.getText());
-			} else {
-				wrongAnswer1.setText(generatedChallenge.getColorText());
-			}
+			usedColors.clear();
+			usedColors.add(generatedChallenge.getColorBackground());
+			wrongAnswer1.setText(generateAvailableColor(availableColors, usedColors));
+			wrongAnswer2.setText(generateAvailableColor(availableColors, usedColors));
+			wrongAnswer3.setText(generateAvailableColor(availableColors, usedColors));
 			break;
 		case COLOR_OBJECT:
-			wrongAnswer2.setText(generatedChallenge.getColorObjectBorder());
-			wrongAnswer3.setText(generatedChallenge.getColorBackground());
-			if(wrongAnswer2.getText().equals(generatedChallenge.getText()) || wrongAnswer3.getText().equals(generatedChallenge.getText())) {
-				wrongAnswer1.setText(generatedChallenge.getText());
-			} else {
-				wrongAnswer1.setText(generatedChallenge.getColorText());
-			}
+			usedColors.clear();
+			usedColors.add(generatedChallenge.getColorObject());
+			wrongAnswer1.setText(generateAvailableColor(availableColors, usedColors));
+			wrongAnswer2.setText(generateAvailableColor(availableColors, usedColors));
+			wrongAnswer3.setText(generateAvailableColor(availableColors, usedColors));
 			break;
 		case COLOR_OBJECT_BORDER:
-			wrongAnswer2.setText(generatedChallenge.getColorObject());
-			wrongAnswer3.setText(generatedChallenge.getColorBackground());
-			if(wrongAnswer2.getText().equals(generatedChallenge.getText()) || wrongAnswer3.getText().equals(generatedChallenge.getText())) {
-				wrongAnswer1.setText(generatedChallenge.getText());
-			} else {
-				wrongAnswer1.setText(generatedChallenge.getColorText());
-			}
+			usedColors.clear();
+			usedColors.add(generatedChallenge.getColorObjectBorder());
+			wrongAnswer1.setText(generateAvailableColor(availableColors, usedColors));
+			wrongAnswer2.setText(generateAvailableColor(availableColors, usedColors));
+			wrongAnswer3.setText(generateAvailableColor(availableColors, usedColors));
+			break;
+		case COLOR_TEXT:
+			usedColors.clear();
+			usedColors.add(generatedChallenge.getColorText());
+			wrongAnswer1.setText(generateAvailableColor(availableColors, usedColors));
+			wrongAnswer2.setText(generateAvailableColor(availableColors, usedColors));
+			wrongAnswer3.setText(generateAvailableColor(availableColors, usedColors));
 			break;
 		case SHAPE_OBJECT:
 			List<Shapes> usedShapes = new ArrayList<Shapes>();
@@ -172,9 +186,11 @@ public class ChallengeFactory {
 			wrongAnswer3.setText(generateShape(usedShapes));
 			break;
 		case TEXT:
-			wrongAnswer1.setText(generatedChallenge.getColorObjectBorder());
-			wrongAnswer2.setText(generatedChallenge.getColorObject());
-			wrongAnswer3.setText(generatedChallenge.getColorBackground());
+			usedColors.clear();
+			usedColors.add(generatedChallenge.getText());
+			wrongAnswer1.setText(generateAvailableColor(availableColors, usedColors));
+			wrongAnswer2.setText(generateAvailableColor(availableColors, usedColors));
+			wrongAnswer3.setText(generateAvailableColor(availableColors, usedColors));
 			break;
 		default:
 			break;
@@ -188,6 +204,17 @@ public class ChallengeFactory {
 		wrongAnswers.add(wrongAnswer3);
 		return wrongAnswers;
 	}
+
+	private static String generateAvailableColor(List<String> availableColors, List<String> usedColors) {
+		List<String> availableColorsCopy = new ArrayList<String>();
+		availableColorsCopy.addAll(availableColors);
+		availableColorsCopy.removeAll(usedColors);
+		int x = random.nextInt(availableColorsCopy.size());
+		String selectedColor = availableColorsCopy.get(x);
+		usedColors.add(selectedColor);
+		return selectedColor.toString();
+	}
+
 
 	public static <T extends Enum<?>> T randomEnum(Class<T> clazz){
         int x = random.nextInt(clazz.getEnumConstants().length);

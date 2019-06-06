@@ -118,5 +118,11 @@ public class QuizChallenge {
 	public void setWinner(Player winner) {
 		this.winner = winner;
 	}
-
+	@Override
+	public String toString() {
+		return "QuizChallenge [id=" + id + ", round=" + round + ", colorBackground=" + colorBackground
+				+ ", colorObject=" + colorObject + ", colorObjectBorder=" + colorObjectBorder + ", colorText="
+				+ colorText + ", text=" + text + ", shape=" + shape + ", questionType=" + questionType + ", question="
+				+ question + ", answers=" + answers + ", winner=" + winner + ", createDateTime=" + createDateTime + "]";
+	}
 }

@@ -57,7 +57,7 @@ export class PlayerService {
         .pipe(map(all => {
           return all.map(p => {
             const match = action.results.filter(r => (r as any).playerId === p.id);
-            return Object.assign({}, p, match[0], {glugsAcknowledged: false});
+            return Object.assign({}, p, match[0], {glugsAcknowledged: match[0].slugCountReceived === 0});
           });
         }))
         .subscribe(x => this.participants.next(x));

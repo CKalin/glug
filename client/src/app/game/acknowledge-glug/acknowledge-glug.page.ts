@@ -40,7 +40,7 @@ export class AcknowledgeGlugPage implements OnInit {
     });
     this.game.getGlugStatistics()
         .pipe(map(s => this.prepareData(s)))
-        .subscribe(s => {console.table(s); this.chart.data = s; });
+        .subscribe(s => this.chart.data = s);
   }
 
   prepareData(s: Array<SlugAllocation>) {

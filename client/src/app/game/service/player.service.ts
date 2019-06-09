@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subject, Subscription} from 'rxjs';
 import {map, take, tap} from 'rxjs/operators';
-import {RoundFinishedAction} from '../model/actions';
+import {ConfirmSlugAction, RoundFinishedAction} from '../model/actions';
 import {Player} from '../model/player';
 import {PlayerRepository} from '../repository/player.repository';
 
@@ -55,12 +55,24 @@ export class PlayerService {
     this.participants
         .pipe(take(1))
         .pipe(map(all => {
-          const x = all.map(p => {
+          return all.map(p => {
             const match = action.results.filter(r => (r as any).playerId === p.id);
             return Object.assign({}, p, match[0]);
           });
-          console.log(x);
-          return x;
+        }))
+        .subscribe(x => this.participants.next(x));
+  }
+
+  registerSlugConfirmed(action: ConfirmSlugAction) {
+    this.participants
+        .pipe(take(1))
+        .pipe(map(all => {
+          return all.map(p => {
+            if (action.playerId === p.id) {
+              return Object.assign({}, p, {glugsAcknowledged: true});
+            }
+            return p;
+          });
         }))
         .subscribe(x => this.participants.next(x));
   }

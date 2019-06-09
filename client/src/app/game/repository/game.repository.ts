@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {RxStomp} from '@stomp/rx-stomp';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {Action, AllocateSlugAction, ChallengeAnswerAction, GameCreatedAction, JoinGameAction} from '../model/actions';
+import {Action, AllocateSlugAction, ChallengeAnswerAction, ConfirmSlugAction, GameCreatedAction, JoinGameAction} from '../model/actions';
 import {StompClientRepository} from './stomp.client.repository';
 
 @Injectable()
@@ -50,5 +50,10 @@ export class GameRepository {
   addGlug(code: string, roundId: number, fromPlayerId: number, toPlayerId: number) {
     const answer = {roundId, fromPlayerId, toPlayerId} as AllocateSlugAction;
     this.client.publish({destination: '/app/game/' + code + '/allocateSlug', body: JSON.stringify(answer)});
+  }
+
+  acknowledgeGlugs(code: string, roundId: number, playerId: number) {
+    const action = {roundId, playerId,  action: 'CONFIRM_SLUGS'} as ConfirmSlugAction;
+    this.client.publish({destination: '/app/game/' + code + '/confirmSlugs', body: JSON.stringify(action)});
   }
 }

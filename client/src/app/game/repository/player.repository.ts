@@ -2,8 +2,8 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {RxStomp} from '@stomp/rx-stomp';
 import {Observable} from 'rxjs';
-import {filter, map, tap} from 'rxjs/operators';
-import {Action, PlayerCreatedAction, PlayerJoinedAction} from '../model/actions';
+import {filter, map} from 'rxjs/operators';
+import {Action, ConfirmSlugAction, PlayerCreatedAction, PlayerJoinedAction} from '../model/actions';
 import {Player} from '../model/player';
 import {StompClientRepository} from './stomp.client.repository';
 
@@ -32,5 +32,12 @@ export class PlayerRepository {
         .pipe(map(r => JSON.parse(r.body) as Action))
         .pipe(filter(a => a.action === 'PLAYER_JOINED'))
         .pipe(map(a => a as PlayerJoinedAction));
+  }
+
+  getSlugsConfirmedEvents(code: string): Observable<ConfirmSlugAction> {
+    return this.client.watch('/topic/game/' + code)
+        .pipe(map(r => JSON.parse(r.body) as Action))
+        .pipe(filter(a => a.action === 'SLUGS_CONFIRMED'))
+        .pipe(map(a => a as ConfirmSlugAction));
   }
 }

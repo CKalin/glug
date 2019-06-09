@@ -1,4 +1,6 @@
 import {Component, OnInit} from '@angular/core';
+import {map} from 'rxjs/operators';
+import {SlugAllocation} from '../model/actions';
 import {GameService} from '../service/game.service';
 import {Player} from '../model/player';
 import {PlayerService} from '../service/player.service';
@@ -36,18 +38,24 @@ export class AcknowledgeGlugPage implements OnInit {
       }
       this.you = y;
     });
-
-    function prepareData(s: Array<Array<any>>) {
-      return s.map(i => {
-        const n = [];
-        n.push(...i);
-        n[1] = n[1] + ' ';
-        return n;
-      });
-    }
-
-    this.game.getGlugStatistics().subscribe(s => this.chart.data = prepareData(s));
+    this.game.getGlugStatistics()
+        .pipe(map(s => this.prepareData(s)))
+        .subscribe(s => {console.table(s); this.chart.data = s; });
   }
+
+  prepareData(s: Array<SlugAllocation>) {
+    return s.map(i => {
+      const n = [];
+      n.push(this.findPlayer(i.fromPlayerId).name, this.findPlayer(i.toPlayerId).name, i.slugCountAllocated);
+      n[1] = n[1] + ' ';
+      return n;
+    });
+  }
+
+  findPlayer(id: number) {
+    return this.players.filter(p => p.id === id)[0];
+  }
+
 
   acknowledgeGlugs() {
     this.game.acknowledgeGlugs();

@@ -9,7 +9,7 @@
 <ion-content>
   <div class="ion-padding" *ngIf="you.glugsAcknowledged">
     <ion-list-header *ngIf="false">Glug Verteilung</ion-list-header>
-    <ion-item *ngIf="false" lines="none">
+    <ion-item *ngIf="chart.data.length" lines="none">
       <google-chart [title]="'Glug Statistik'"
                     type="Sankey"
                     [data]="chart.data"

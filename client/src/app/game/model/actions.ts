@@ -39,6 +39,10 @@ export interface AllocateSlugAction extends Action {
   fromPlayerId: number;
   toPlayerId: number;
 }
+export interface ConfirmSlugAction extends Action {
+  roundId: number;
+  playerId: number;
+}
 
 export interface ChallengeAnswerAction extends Action {
   playerId: number;
@@ -69,4 +73,15 @@ export interface GameCreatedAction extends Action {
 export interface PlayerJoinedAction extends Action {
   inGamePlayers: Array<Player>;
   joinedPlayer: Player;
+}
+
+export interface AllSlugsAllocatedStatisticsMessage extends Action {
+  roundId: number;
+  statistics: Array<SlugAllocation>;
+}
+
+export interface SlugAllocation {
+  fromPlayerId: number;
+  toPlayerId: number;
+  slugCountAllocated: number;
 }

@@ -2,7 +2,13 @@ import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {BehaviorSubject, Observable, Subject, zip} from 'rxjs';
 import {filter, first, map, tap} from 'rxjs/operators';
-import {ChallengeAnswerAction, CountdownAction, NewChallengeAction, RoundFinishedAction} from '../model/actions';
+import {
+  AllSlugsAllocatedStatisticsMessage,
+  ChallengeAnswerAction, ConfirmSlugAction,
+  CountdownAction,
+  NewChallengeAction,
+  RoundFinishedAction, SlugAllocation
+} from '../model/actions';
 import {Answer, Challenge} from '../model/challenge';
 import {Message} from '../model/message';
 import {Player} from '../model/player';
@@ -14,6 +20,7 @@ import {PlayerService} from './player.service';
 export class GameService {
 
   private challengeUpdates: Subject<Challenge | Message> = new BehaviorSubject(null);
+  private statistics = new BehaviorSubject<Array<SlugAllocation>>([]);
   private answers: Subject<ChallengeAnswerAction> = new BehaviorSubject(null);
   private timeLeft: Subject<number> = new BehaviorSubject(null);
   private roundId: number;
@@ -76,6 +83,12 @@ export class GameService {
           this.roundId = finished.roundId;
           this.player.registerResults(finished);
           break;
+        case 'ALL_SLUGS_ALLOCATED_STATISTICS':
+          this.statistics.next((action as AllSlugsAllocatedStatisticsMessage).statistics);
+          break;
+        case 'SLUGS_CONFIRMED':
+          this.player.registerSlugConfirmed(action as ConfirmSlugAction);
+          break;
         default:
           console.log(action);
       }
@@ -105,8 +118,6 @@ export class GameService {
         .subscribe();
   }
 
-  // *************************** MOCKS **********************************
-
   getChallengeUpdates(): Observable<Challenge | Message> {
     return this.challengeUpdates.asObservable();
   }
@@ -122,28 +133,13 @@ export class GameService {
   }
 
   acknowledgeGlugs() {
+    this.getCodeAndPlayer()
+        .subscribe(([c, p]) => this.game.acknowledgeGlugs(c, this.roundId, p));
   }
 
-  getTimeLeft(): Observable<number> {
-    return this.timeLeft.asObservable();
-  }
-
-  getGlugStatistics(): Observable<Array<Array<any>>> {
+  getGlugStatistics(): Observable<Array<SlugAllocation>> {
     return this.statistics.asObservable();
   }
-
-  private statistics = new BehaviorSubject(
-      [
-        ['Christian', 'Florian', 3],
-        ['Florian', 'Erik', 2],
-        ['Christian', 'Sebastian', 3],
-        ['Erik', 'Florian', 4],
-        ['Sebastian', 'Erik', 2],
-        ['Sebastian', 'Florian', 1],
-        ['Erik', 'Christian', 3],
-        ['Steffen', 'Sebastian', 4]
-      ]
-  );
 
   private getCodeAndPlayer() {
     const code = this.code.asObservable()
@@ -152,6 +148,12 @@ export class GameService {
         .pipe(map(p => (p as Player).id))
         .pipe(first());
     return zip(code, playerId);
+  }
+
+  // *************************** MOCKS **********************************
+
+  getTimeLeft(): Observable<number> {
+    return this.timeLeft.asObservable();
   }
 }
 

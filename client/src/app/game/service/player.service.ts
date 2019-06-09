@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, Subject, Subscription} from 'rxjs';
-import {first, map, take, tap} from 'rxjs/operators';
+import {map, take, tap} from 'rxjs/operators';
 import {RoundFinishedAction} from '../model/actions';
-import {PlayerRepository} from '../repository/player.repository';
 import {Player} from '../model/player';
+import {PlayerRepository} from '../repository/player.repository';
 
 @Injectable()
 export class PlayerService {
@@ -25,7 +25,7 @@ export class PlayerService {
         .pipe(tap(p => this.youSubject.next(p)));
   }
 
-  public connect(code: string) {
+  public watchGame(code: string) {
     if (this.activeGameSubscription) {
       this.activeGameSubscription.unsubscribe();
     }

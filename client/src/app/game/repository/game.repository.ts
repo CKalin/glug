@@ -25,14 +25,17 @@ export class GameRepository {
     return this.http.get<boolean>('/api/game/isPresent', {params: p});
   }
 
-  public connect(code: string, playerId: number): Observable<Action> {
+  public watchGame(code: string): Observable<Action> {
+    return this.client.watch('/topic/game/' + code)
+        .pipe(map(r => JSON.parse(r.body) as Action));
+  }
+
+  public joinGame(code: string, playerId: number) {
     const payload: JoinGameAction = {
       action: 'JOIN_GAME',
       playerId
     };
     this.client.publish({destination: '/app/game/' + code + '/player', body: JSON.stringify(payload)});
-    return this.client.watch('/topic/game/' + code)
-        .pipe(map(r => JSON.parse(r.body) as Action));
   }
 
   public startNewRound(code: string) {

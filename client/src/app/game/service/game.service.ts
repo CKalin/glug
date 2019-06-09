@@ -40,7 +40,7 @@ export class GameService {
   }
 
   private connectToGame(code: string, playerId: number) {
-    this.game.connect(code, playerId).subscribe(action => {
+    this.game.watchGame(code).subscribe(action => {
       switch (action.action) {
         case 'COUNT_DOWN':
           this.router.navigateByUrl('/challenge');
@@ -80,7 +80,8 @@ export class GameService {
           console.log(action);
       }
     });
-    this.player.connect(code);
+    this.player.watchGame(code);
+    this.game.joinGame(code, playerId);
   }
 
   getAnswers() {

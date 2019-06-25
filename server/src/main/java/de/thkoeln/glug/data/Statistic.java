@@ -1,5 +1,6 @@
 package de.thkoeln.glug.data;
 
+import de.thkoeln.glug.communication.response.SlugsAllocatedStatistic;
 //import de.thkoeln.glug.controller.GameService;
 import de.thkoeln.glug.data.Player;
 import de.thkoeln.glug.data.repository.GameRepository;
@@ -9,6 +10,8 @@ import de.thkoeln.glug.data.repository.QuizChallengeRepository;
 import de.thkoeln.glug.data.repository.RoundRepository;
 import de.thkoeln.glug.data.repository.RoundResultRepository;
 import de.thkoeln.glug.data.repository.SlugAllocationRepository;
+import de.thkoeln.glug.data.service.PlayerService;
+
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,66 +34,54 @@ public class Statistic {
 	@Autowired
 	SlugAllocationRepository slugAllocationRepository;
 
-	private String AllSlugsToPlayer;
-	private String statisticTwo;
-	private String statisticThree;
-	private String statisticFour;
-	private String statisticFive;
-	private String statisticSix;
-	//private Iterable<Round> iterable_round;
+	private String mostSlugsDistributed;
+	private String leastSlugsDistributed;
+	private String leastSlugsReceived;
+	private String mostSlugsReceived;
+	private Player player;
 	private Game game;
-	//private SlugAllocation slugallocation;
-	//private GameService gameservice;
-	private Integer slugsreceived;
-	private Integer columnIndex;
-	private int[][] playerSlugsArray; //= new int[rowIndex][columnIndex];
-
+	private long highValue;
+	private long lowValue;
+	private long ValuefromPlayerID;
+	private int[][] playerSlugsArray; 
+	private long[][] playerSlugsArrayl;
+	
 	
 	public Statistic(Player player, String accessCode){
 		this.setGame(accessCode);		
-		this.setAllReceivedSlugs(this.getGame());
-		this.setAllSlugsinAllRoundsToPlayer(player);
-		this.setAllSlugsFromPlayerReceived(player, this.getGame());
-		this.setAtLeastSlugsReceivedInGame(this.getGame());
-		this.setMostSlugsReceivedInGameByPlayer(getGame(), player);
-		
-		
-		/*
-		this.setStatisticTwo(game);
-		this.setStatisticThree(game);
-		this.setStatisticFour(game);
-		this.setStatisticFive(game, player);
-		this.setStatisticSix(game, player);
-		*/
+		this.setMostSlugsFromPlayerDistributed(this.getGame());
+		this.setleastSlugsFromPlayerDistributed(this.getGame());
+		this.setMostSlugsToPlayerReceived(this.game);
+		this.setleastSlugsToPlayerReceived(this.game);
 	}
 
-	private Integer calculateRecievedSlugs(Round round, Player player) {
-		List<SlugAllocation> recievedSlugs = slugAllocationRepository.findAllByRoundAndToPlayer(round, player);
-		return recievedSlugs.size();
+	private List<SlugsAllocatedStatistic> calculateSlugsPerRound(Round round) {
+		List<SlugsAllocatedStatistic> allSlugsPerRound = slugAllocationRepository.findAllByRoundGroupByFromPlayerAndToPlayer(round);
+		return allSlugsPerRound;
 	}
 	
 	public Game getGame() {
 		return game;
 	}		
-	public String getAllSlugsToPlayer() {
-		return AllSlugsToPlayer;
+	
+	public String getMostSlugsFromPlayerDistributed() {
+		return this.mostSlugsDistributed;
+	};
+	
+	public String getleastSlugsFromPlayerDistributed() {
+		return this.leastSlugsDistributed;
 	}
-	public String getStatisticTwo() {
-		return statisticTwo;
-	}
-	public String getStatisticThree() {
-		return statisticThree;
-	}
-	public String getStatisticFour() {
-		return statisticFour;
-	}
-	public String getStatisticFive() {
-		return statisticFive;
-	}
-	public String getStatisticSix() {
-		return statisticSix;
+	public String getMostSlugsToPlayerReceived() {
+		return this.mostSlugsReceived;
+	};
+	
+	public String getleastSlugsToPlayerReceived() {
+		return this.leastSlugsReceived;
 	}
 	
+	private Player FindPlayerByID(long playerId) {
+		return player = new PlayerService().fetchPlayer((int) playerId);
+	}
 	
 	private Game fetchGame(String accessCode) {
 		return gameRepository.findOneByAccessCode(accessCode).orElseThrow(() -> new RuntimeException("Game not existing"));
@@ -99,107 +90,184 @@ public class Statistic {
 	public void setGame(String accessCode) {
 		this.game = fetchGame(accessCode);
 	}
- 	
-	public void setAllReceivedSlugs(Game game) {
-		
+	public void setMostSlugsFromPlayerDistributed(Game game)
+	{		
 		Set<Player> players = game.getPlayers();
 		players.forEach(player ->{
-			this.playerSlugsArray[0][columnIndex] = player.getId();	
-			slugsreceived = null;
-				game.getRounds().forEach(round -> {
-			    Integer calculateRecievedSlugs = calculateRecievedSlugs(round, player);		
-			    slugsreceived = slugsreceived + calculateRecievedSlugs;
-				});
-			
-				this.playerSlugsArray[1][columnIndex] = slugsreceived;
-				columnIndex++;
-		});
-	}
-	
-	public void setAllSlugsinAllRoundsToPlayer(Player player) {
-		for(int i = 0 ; i < this.playerSlugsArray.length; i++) {
-			if(	this.playerSlugsArray[i][0] == player.getId() ) {
-				this.slugsreceived = this.playerSlugsArray[1][i];
-				break;
-			}
-		}
-	}
-	
-	public void setAllSlugsFromPlayerReceived(Player player, Game game) {
-		game.getRounds().forEach(round -> {
+			for( int i = 0; i < game.getPlayers().size(); i++) {
+				this.playerSlugsArrayl[i][1] = player.getId();
+			};
+		});			
 		
-		});
-		StringBuilder statTwoText = new StringBuilder();
-		statTwoText.append("Der Teufel: ");
-		statTwoText.append("Basti ");// Select
-		statTwoText.append("hat ganze ");
-	    statTwoText.append("30 "); // Select
-	    statTwoText.append("Schlücke verteilt.");
-		this.statisticTwo = statTwoText.toString();
-		}
-	
-
-	
-	
-	public void setAtLeastSlugsReceivedInGame(Game game) {
-		StringBuilder statFourText = new StringBuilder();
-		statFourText.append("Der Nüchterne: ");
-		statFourText.append("Maria ");// Select
-		statFourText.append("musste ");
-        statFourText.append("2 "); //Select
-		statFourText.append("Schlücke getrunken.");
-		this.statisticFour = statFourText.toString();
-		}
-	
-
-	public void setMostSlugsReceivedInGameByPlayer(Game game, Player player) {
-		StringBuilder statFiveText = new StringBuilder();
-		statFiveText.append("Marius ");// Select
-		statFiveText.append("hat dir die meisten Schlücke ");
-		statFiveText.append("(20) "); // Select
-		statFiveText.append("gegeben.");
-		this.statisticFive = statFiveText.toString();
-		}
-	
-	
-	public void setStatisticSix(Game game, Player player) {
-		/*
-		StringBuilder statSixText = new StringBuilder();
-		
-		long numer_of_players = this.playerRepository.count();
-		Integer slug_from_a_player = null;
-		
-		iterable_round = roundRepository.findByGame(game); // Alle Runden
-		for (Round stat_round : iterable_round) { 
-		Iterator<Round> Iter_round = iterable_round.iterator();
-		while (Iter_round.hasNext()) {
-			Round round = (Round) Iter_round.next();
-			Set<RoundResult> results = gameservice.calculateRoundResult(round.getId());	
-			
-			
-			Set<SlugAllocation> Slugallocation = round.getSlugAllocations();// Alle Schlücke der Runde
-				Iterator SlugIterator = Slugallocation.iterator();
-				while(SlugIterator.hasNext()) {
-					Object slugallocation_o = SlugIterator.next();
-					slugallocation = (SlugAllocation) slugallocation_o;
-					Player FromPlayer = slugallocation.getFromPlayer(); // Schlücke für den Spieler hochzählen
-						if (FromPlayer == player) {
-							slug_from_a_player ++;	
+		game.getRounds().forEach(round -> 
+		{
+			List<SlugsAllocatedStatistic> SlugsAllocatedStatistic = calculateSlugsPerRound(round);
+			for ( int i = 0; i < SlugsAllocatedStatistic.size(); i++ ) 
+			{
+				de.thkoeln.glug.communication.response.SlugsAllocatedStatistic SlugAllocation = SlugsAllocatedStatistic.get(i);
+				for( int  numberPlayer =  0; i < game.getPlayers().size(); i++) 
+				{
+					if ( SlugAllocation.getFromPlayerId() == this.playerSlugsArray[numberPlayer][1] ) 
+					{
+					this.playerSlugsArrayl[numberPlayer][2] = this.playerSlugsArrayl[numberPlayer][2] + SlugAllocation.getSlugCountAllocated();
+						if(highValue < this.playerSlugsArrayl[numberPlayer][2]) 
+						{
+							highValue = this.playerSlugsArrayl[numberPlayer][2];
+							ValuefromPlayerID = this.playerSlugsArrayl[numberPlayer][1];
+							player = FindPlayerByID(ValuefromPlayerID);
 						}
-			
-			List<SlugAllocation> Slugs =  slugAllocationRepository.findAllByRoundAndToPlayer(round, player);
-			Iterator iterator = Slugs.iterator();
-			while(iterator.hasNext() ){
-			Object Slug = 	iterator.next();
-			
+					}
+				}
 			}
-		}
-		}
+		});
+		StringBuilder mostDistributed = new StringBuilder();
+		mostDistributed.append("Der Teufel: ");
+		mostDistributed.append(player.getName());// Select
+		mostDistributed.append("hat ganze ");
+		mostDistributed.append(highValue); // Select
+		mostDistributed.append("Schlücke verteilt.");
+		this.mostSlugsDistributed = mostDistributed.toString();
 		
-		statSixText.append("Du hast ");
-		statSixText.append(slug_from_a_player);
-		statSixText.append("gegeben.");
-		this.statisticSix = statSixText.toString();
-		*/
+		
 	}
+	
+	public void setleastSlugsFromPlayerDistributed(Game game)
+	{		
+		Set<Player> players = game.getPlayers();
+		players.forEach(player ->{
+			for( int i = 0; i < game.getPlayers().size(); i++) {
+				this.playerSlugsArrayl[i][1] = player.getId();
+			};
+		});			
+		
+		game.getRounds().forEach(round -> 
+		{
+			List<SlugsAllocatedStatistic> SlugsAllocatedStatistic = calculateSlugsPerRound(round);
+			for ( int i = 0; i < SlugsAllocatedStatistic.size(); i++ ) 
+			{
+				de.thkoeln.glug.communication.response.SlugsAllocatedStatistic SlugAllocation = SlugsAllocatedStatistic.get(i);
+				for( int  numberPlayer =  0; i < game.getPlayers().size(); i++) 
+				{
+					if ( SlugAllocation.getFromPlayerId() == this.playerSlugsArray[numberPlayer][1] ) 
+					{
+					this.playerSlugsArrayl[numberPlayer][2] = this.playerSlugsArrayl[numberPlayer][2] + SlugAllocation.getSlugCountAllocated();
+						
+					   if(lowValue == 0) 
+						{
+						   lowValue = this.playerSlugsArrayl[numberPlayer][2];  
+						   ValuefromPlayerID = this.playerSlugsArrayl[numberPlayer][1]; 
+						}
+					   else {
+						   if (lowValue > this.playerSlugsArrayl[numberPlayer][2]){
+						   lowValue = this.playerSlugsArrayl[numberPlayer][2];
+						   ValuefromPlayerID = this.playerSlugsArrayl[numberPlayer][1];
+					   }
+							player = FindPlayerByID(ValuefromPlayerID);
+						}
+					}
+				}
+			}
+		});
+		StringBuilder leastDistributed = new StringBuilder();
+		leastDistributed.append("Der Verlier: ");
+		leastDistributed.append(player.getName());// Select
+		leastDistributed.append("hat nur ");
+		leastDistributed.append(lowValue); // Select
+		leastDistributed.append("Schlücke verteilt.");
+		this.leastSlugsDistributed = leastDistributed.toString();
+		
+	}
+	
+	public void setleastSlugsToPlayerReceived(Game game)
+	{		
+		Set<Player> players = game.getPlayers();
+		players.forEach(player ->{
+			for( int i = 0; i < game.getPlayers().size(); i++) {
+				this.playerSlugsArrayl[i][1] = player.getId();
+			};
+		});			
+		
+		game.getRounds().forEach(round -> 
+		{
+			List<SlugsAllocatedStatistic> SlugsAllocatedStatistic = calculateSlugsPerRound(round);
+			for ( int i = 0; i < SlugsAllocatedStatistic.size(); i++ ) 
+			{
+				de.thkoeln.glug.communication.response.SlugsAllocatedStatistic SlugAllocation = SlugsAllocatedStatistic.get(i);
+				for( int  numberPlayer =  0; i < game.getPlayers().size(); i++) 
+				{
+					if ( SlugAllocation.getToPlayerId() == this.playerSlugsArray[numberPlayer][1] ) 
+					{
+					this.playerSlugsArrayl[numberPlayer][2] = this.playerSlugsArrayl[numberPlayer][2] + SlugAllocation.getSlugCountAllocated();
+						
+					   if(lowValue == 0) 
+						{
+						   lowValue = this.playerSlugsArrayl[numberPlayer][2];  
+						   ValuefromPlayerID = this.playerSlugsArrayl[numberPlayer][1]; 
+						}
+					   else {
+						   if (lowValue > this.playerSlugsArrayl[numberPlayer][2]){
+						   lowValue = this.playerSlugsArrayl[numberPlayer][2];
+						   ValuefromPlayerID = this.playerSlugsArrayl[numberPlayer][1];
+					   }
+							player = FindPlayerByID(ValuefromPlayerID);
+						}
+					}
+				}
+			}
+		});
+		StringBuilder leastReceived = new StringBuilder();
+		leastReceived.append("Der Nüchterne: ");
+		leastReceived.append(player.getName());// Select
+		leastReceived.append("hat nur ");
+		leastReceived.append(lowValue); // Select
+		leastReceived.append("Schlücke bekommen.");
+		this.leastSlugsReceived = leastReceived.toString();
+		
+	}
+	                 
+
+	public void setMostSlugsToPlayerReceived(Game game)
+	{		
+		Set<Player> players = game.getPlayers();
+		players.forEach(player ->{
+			for( int i = 0; i < game.getPlayers().size(); i++) {
+				this.playerSlugsArrayl[i][1] = player.getId();
+			};
+		});			
+		
+		game.getRounds().forEach(round -> 
+		{
+			List<SlugsAllocatedStatistic> SlugsAllocatedStatistic = calculateSlugsPerRound(round);
+			for ( int i = 0; i < SlugsAllocatedStatistic.size(); i++ ) 
+			{
+				de.thkoeln.glug.communication.response.SlugsAllocatedStatistic SlugAllocation = SlugsAllocatedStatistic.get(i);
+				for( int  numberPlayer =  0; i < game.getPlayers().size(); i++) 
+				{
+					if ( SlugAllocation.getToPlayerId() == this.playerSlugsArray[numberPlayer][1] ) 
+					{
+					this.playerSlugsArrayl[numberPlayer][2] = this.playerSlugsArrayl[numberPlayer][2] + SlugAllocation.getSlugCountAllocated();
+						
+						   if (highValue < this.playerSlugsArrayl[numberPlayer][2]){
+						   highValue = this.playerSlugsArrayl[numberPlayer][2];
+						   ValuefromPlayerID = this.playerSlugsArrayl[numberPlayer][1];
+					   }
+							player = FindPlayerByID(ValuefromPlayerID);
+					}
+				}
+			}
+		});
+		
+		StringBuilder mostReceived = new StringBuilder();
+		mostReceived.append("Trinker des Tages: ");
+		mostReceived.append(player.getName());// Select
+		mostReceived.append("hat stolze");
+		mostReceived.append(highValue); // Select
+		mostReceived.append("Schlücke bekommen.");
+		this.mostSlugsReceived = mostReceived.toString();
+		
+	}
+	
+	
+	
+
 }

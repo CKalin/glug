@@ -13,6 +13,7 @@ import de.thkoeln.glug.data.SlugAllocation;
 
 public interface SlugAllocationRepository extends CrudRepository<SlugAllocation, Integer> {
 	List<SlugAllocation> findAllByRoundAndToPlayer(Round roundId, Player playerId);
+	List<SlugAllocation> findAllByRoundIn(List<Round> round);
 
 	@Query("SELECT " +
 	           "    new de.thkoeln.glug.communication.response.SlugsAllocatedStatistic(s.fromPlayer, s.toPlayer, COUNT(s.toPlayer)) " +
@@ -22,5 +23,5 @@ public interface SlugAllocationRepository extends CrudRepository<SlugAllocation,
 	           "		s.round = ?1 " +
 	           "GROUP BY " +
 	           "    s.fromPlayer, s.toPlayer")
-	List<SlugsAllocatedStatistic> findAllByRoundGroupByFromPlayerAndToPlayer(Round round);
+	List<SlugsAllocatedStatistic> findAllByRoundGroupByFromPlayerAndToPlayer(Round round);	
 	}

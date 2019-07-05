@@ -81,6 +81,10 @@ public class RoundService {
 		List<SlugAllocation> recievedSlugs = slugAllocationRepository.findAllByRoundAndToPlayer(round, player);
 		return recievedSlugs.size();
 	}
+	
+	List<SlugAllocation> getSlugAllocationsForRounds(List<Round> rounds) {
+		return slugAllocationRepository.findAllByRoundIn(rounds);		
+	}
 
 	@Transactional(readOnly=false)
 	public SlugAllocation allocateSlug(Player fromPlayer, Player toPlayer, Round round) {

@@ -14,4 +14,21 @@ public class GetStatisticResponse {
 	public void addStatistic(String statistic) {
 		statistics.add(statistic);
 	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public List<String> getStatistics() {
+		return statistics;
+	}
+
+	public void setStatistics(List<String> statistics) {
+		this.statistics = statistics;
+	}
+	
 }

@@ -1,8 +1,10 @@
-package de.thkoeln.glug.data;
+package de.thkoeln.glug.service;
 
 import de.thkoeln.glug.communication.response.SlugsAllocatedStatistic;
+import de.thkoeln.glug.data.Game;
 //import de.thkoeln.glug.controller.GameService;
 import de.thkoeln.glug.data.Player;
+import de.thkoeln.glug.data.Round;
 import de.thkoeln.glug.data.repository.GameRepository;
 import de.thkoeln.glug.data.repository.PlayerRepository;
 import de.thkoeln.glug.data.repository.QuizAnswerRepository;
@@ -10,15 +12,15 @@ import de.thkoeln.glug.data.repository.QuizChallengeRepository;
 import de.thkoeln.glug.data.repository.RoundRepository;
 import de.thkoeln.glug.data.repository.RoundResultRepository;
 import de.thkoeln.glug.data.repository.SlugAllocationRepository;
-import de.thkoeln.glug.data.service.PlayerService;
 
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 
-
-public class Statistic {
+@Service
+public class StatisticService {
 	@Autowired
 	PlayerRepository playerRepository;
 	@Autowired
@@ -47,7 +49,7 @@ public class Statistic {
 	private long[][] playerSlugsArrayl;
 	
 	
-	public Statistic(Player player, String accessCode){
+	public StatisticService(Player player, String accessCode){
 		this.setGame(accessCode);		
 		this.setMostSlugsFromPlayerDistributed(this.getGame());
 		this.setleastSlugsFromPlayerDistributed(this.getGame());

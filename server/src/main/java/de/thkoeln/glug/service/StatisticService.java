@@ -17,10 +17,13 @@ import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
 public class StatisticService {
+	@Autowired
+	GameService gameService;
 	@Autowired
 	PlayerRepository playerRepository;
 	@Autowired
@@ -35,65 +38,14 @@ public class StatisticService {
 	QuizAnswerRepository quizAnswerRepository;
 	@Autowired
 	SlugAllocationRepository slugAllocationRepository;
-
-	private String mostSlugsDistributed;
-	private String leastSlugsDistributed;
-	private String leastSlugsReceived;
-	private String mostSlugsReceived;
-	private Player player;
-	private Game game;
-	private long highValue;
-	private long lowValue;
-	private long ValuefromPlayerID;
-	private int[][] playerSlugsArray; 
-	private long[][] playerSlugsArrayl;
 	
-	
-	public StatisticService(Player player, String accessCode){
-		this.setGame(accessCode);		
-		this.setMostSlugsFromPlayerDistributed(this.getGame());
-		this.setleastSlugsFromPlayerDistributed(this.getGame());
-		this.setMostSlugsToPlayerReceived(this.game);
-		this.setleastSlugsToPlayerReceived(this.game);
-	}
-
-	private List<SlugsAllocatedStatistic> calculateSlugsPerRound(Round round) {
-		List<SlugsAllocatedStatistic> allSlugsPerRound = slugAllocationRepository.findAllByRoundGroupByFromPlayerAndToPlayer(round);
-		return allSlugsPerRound;
+	public StatisticService() {
+		
 	}
 	
-	public Game getGame() {
-		return game;
-	}		
-	
-	public String getMostSlugsFromPlayerDistributed() {
-		return this.mostSlugsDistributed;
-	};
-	
-	public String getleastSlugsFromPlayerDistributed() {
-		return this.leastSlugsDistributed;
-	}
-	public String getMostSlugsToPlayerReceived() {
-		return this.mostSlugsReceived;
-	};
-	
-	public String getleastSlugsToPlayerReceived() {
-		return this.leastSlugsReceived;
-	}
-	
-	private Player FindPlayerByID(long playerId) {
-		return player = new PlayerService().fetchPlayer((int) playerId);
-	}
-	
-	private Game fetchGame(String accessCode) {
-		return gameRepository.findOneByAccessCode(accessCode).orElseThrow(() -> new RuntimeException("Game not existing"));
-	}
-	
-	public void setGame(String accessCode) {
-		this.game = fetchGame(accessCode);
-	}
-	public void setMostSlugsFromPlayerDistributed(Game game)
-	{		
+	@Transactional(readOnly=false)
+	public String getMostSlugsAllocated(String accessCode) {	
+		Game game = gameService.fetchGame(accessCode);
 		Set<Player> players = game.getPlayers();
 		players.forEach(player ->{
 			for( int i = 0; i < game.getPlayers().size(); i++) {
@@ -122,19 +74,18 @@ public class StatisticService {
 				}
 			}
 		});
-		StringBuilder mostDistributed = new StringBuilder();
-		mostDistributed.append("Der Teufel: ");
-		mostDistributed.append(player.getName());// Select
-		mostDistributed.append("hat ganze ");
-		mostDistributed.append(highValue); // Select
-		mostDistributed.append("Schlücke verteilt.");
-		this.mostSlugsDistributed = mostDistributed.toString();
-		
-		
+		StringBuilder mostAllocated = new StringBuilder();
+		mostAllocated.append("Der Teufel: ");
+		mostAllocated.append(player.getName());// Select
+		mostAllocated.append("hat ganze ");
+		mostAllocated.append(highValue); // Select
+		mostAllocated.append("Schlücke verteilt.");
+		return mostAllocated.toString();
 	}
 	
-	public void setleastSlugsFromPlayerDistributed(Game game)
-	{		
+	@Transactional(readOnly=false)
+	public String getLeastSlugsAllocated(String accessCode) {
+		Game game = gameService.fetchGame(accessCode);
 		Set<Player> players = game.getPlayers();
 		players.forEach(player ->{
 			for( int i = 0; i < game.getPlayers().size(); i++) {
@@ -170,18 +121,19 @@ public class StatisticService {
 				}
 			}
 		});
-		StringBuilder leastDistributed = new StringBuilder();
-		leastDistributed.append("Der Verlier: ");
-		leastDistributed.append(player.getName());// Select
-		leastDistributed.append("hat nur ");
-		leastDistributed.append(lowValue); // Select
-		leastDistributed.append("Schlücke verteilt.");
-		this.leastSlugsDistributed = leastDistributed.toString();
+		StringBuilder leastAllocated = new StringBuilder();
+		leastAllocated.append("Der Verlier: ");
+		leastAllocated.append(player.getName());// Select
+		leastAllocated.append("hat nur ");
+		leastAllocated.append(lowValue); // Select
+		leastAllocated.append("Schlücke verteilt.");
+		return leastAllocated.toString();
 		
 	}
 	
-	public void setleastSlugsToPlayerReceived(Game game)
-	{		
+	@Transactional(readOnly=false)
+	public String getLeastSlugsReceived(String accessCode) {
+		Game game = gameService.fetchGame(accessCode);
 		Set<Player> players = game.getPlayers();
 		players.forEach(player ->{
 			for( int i = 0; i < game.getPlayers().size(); i++) {
@@ -223,13 +175,12 @@ public class StatisticService {
 		leastReceived.append("hat nur ");
 		leastReceived.append(lowValue); // Select
 		leastReceived.append("Schlücke bekommen.");
-		this.leastSlugsReceived = leastReceived.toString();
-		
+		return leastReceived.toString();		
 	}
 	                 
-
-	public void setMostSlugsToPlayerReceived(Game game)
-	{		
+	@Transactional(readOnly=false)
+	public String getMostSlugsReceived(String accessCode) {
+		Game game = gameService.fetchGame(accessCode);
 		Set<Player> players = game.getPlayers();
 		players.forEach(player ->{
 			for( int i = 0; i < game.getPlayers().size(); i++) {
@@ -265,11 +216,6 @@ public class StatisticService {
 		mostReceived.append("hat stolze");
 		mostReceived.append(highValue); // Select
 		mostReceived.append("Schlücke bekommen.");
-		this.mostSlugsReceived = mostReceived.toString();
-		
+		return mostReceived.toString();
 	}
-	
-	
-	
-
 }

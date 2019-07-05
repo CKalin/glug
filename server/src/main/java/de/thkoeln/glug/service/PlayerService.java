@@ -1,4 +1,4 @@
-package de.thkoeln.glug.data.service;
+package de.thkoeln.glug.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

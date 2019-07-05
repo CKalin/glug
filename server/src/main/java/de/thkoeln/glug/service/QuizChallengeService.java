@@ -1,4 +1,4 @@
-package de.thkoeln.glug.data.service;
+package de.thkoeln.glug.service;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -41,10 +41,10 @@ import de.thkoeln.glug.data.RoundResult;
 import de.thkoeln.glug.data.SlugAllocation;
 import de.thkoeln.glug.data.repository.GameRepository;
 import de.thkoeln.glug.data.repository.PlayerRepository;
-import de.thkoeln.glug.data.service.GameService;
-import de.thkoeln.glug.data.service.PlayerService;
-import de.thkoeln.glug.data.service.QuizChallengeService;
-import de.thkoeln.glug.data.service.RoundService;
+import de.thkoeln.glug.service.GameService;
+import de.thkoeln.glug.service.PlayerService;
+import de.thkoeln.glug.service.QuizChallengeService;
+import de.thkoeln.glug.service.RoundService;
 
 @Controller
 public class GameController {

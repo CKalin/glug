@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import de.thkoeln.glug.data.Game;
 import de.thkoeln.glug.data.Player;
 import de.thkoeln.glug.data.repository.GameRepository;
+import de.thkoeln.glug.service.GameService;
 
 public class GameServiceTest {
 	private final static String ACCESS_CODE = "84721";
